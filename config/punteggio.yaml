@@ -1,0 +1,31 @@
+# Valori di partenza presi da docs/piano-consulenza-pmi.md.
+# Da ritarare dopo le prime classifiche e dopo i primi contatti.
+
+settori:
+  # Voti da 1 a 5 con le prove (link). I pesi sommano a 100:
+  # base = somma(peso × voto) / 5, da 20 a 100; punteggio = base × moltiplicatore di rischio.
+  # I nomi dei criteri sono anche le colonne di data/settori.csv.
+  pesi:
+    lavoro_ripetitivo: 25      # prenotazioni, promemoria, preventivi, risposte, documenti
+    capacita_spesa: 15         # margini e scontrino tipici
+    dimensione_mercato: 15     # attività indipendenti in Italia (campione Maps)
+    potenziale_ricorrente: 10  # assistenza mensile, hosting, aggiornamenti
+    voucher_incentivi: 10      # voucher digitali delle Camere di Commercio
+    facilita_contatto: 10      # titolare in sede, associazioni di categoria
+    maturita_digitale: 10      # qualche strumento, nessuna automazione
+    concorrenza: 5             # pochi fornitori in zona = voto alto
+  moltiplicatore_rischio:
+    normale: 1.0
+    dati_sensibili: 0.8        # per esempio studi sanitari
+
+opportunita:
+  # Punti dei segnali della singola attività; il totale ordina le attività da contattare.
+  punti:
+    instagram_attivo: 2        # buon materiale e post regolari
+    nessun_sito: 2             # vale solo se instagram_attivo
+    sito_debole: 2             # sito vecchio o senza prenotazione o contatto rapido
+    molte_recensioni: 1        # volume di clienti alto
+    indipendente: 1
+    catena: -3                 # franchising o catena
+    prenotazione_moderna: -1   # già un sistema di prenotazione moderno e completo
+    nessuna_presenza: -1       # nessuna presenza online e nessuna attività sui social

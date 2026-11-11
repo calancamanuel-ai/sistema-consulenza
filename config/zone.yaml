@@ -1,0 +1,19 @@
+# Zone di ricerca delle attività (mercato: tutta Italia).
+# Si parte dalla zona di San Giovanni in Persiceto, Bologna e Modena;
+# per allargare basta aggiungere voci con lo stesso formato.
+#   nome:     usato nella ricerca testuale ("officina a <nome>")
+#   lat, lng: centro della zona, orienta i risultati di Places
+#   raggio_m: raggio in metri attorno al centro (massimo 50000)
+zone:
+  - nome: San Giovanni in Persiceto
+    lat: 44.6403
+    lng: 11.1844
+    raggio_m: 8000
+  - nome: Bologna
+    lat: 44.4937
+    lng: 11.3430
+    raggio_m: 8000
+  - nome: Modena
+    lat: 44.6462
+    lng: 10.9254
+    raggio_m: 6000

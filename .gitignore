@@ -1,0 +1,21 @@
+# Credenziali e segreti: non vanno mai nel repository.
+# Le chiavi degli account di servizio Google sono file .json con nomi qualsiasi,
+# quindi si escludono tutti i .json tranne le risposte simulate dei test.
+*.json
+!tests/risposte/*.json
+.env
+.env.*
+*.pem
+*.p12
+*.key
+credenziali/
+
+# Esportazioni del foglio (contengono dati personali)
+*.xlsx
+*.ods
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
