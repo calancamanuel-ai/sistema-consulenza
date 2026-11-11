@@ -1,0 +1,15 @@
+{
+  "places": [
+    {
+      "id": "ChIJesempio0000003",
+      "displayName": {"text": "Gommista Demo", "languageCode": "it"},
+      "formattedAddress": "Via Demo, 3, 40017 San Giovanni in Persiceto BO, Italia",
+      "nationalPhoneNumber": "051 000 0003",
+      "rating": 4.2,
+      "userRatingCount": 18,
+      "businessStatus": "OPERATIONAL",
+      "primaryType": "tire_shop",
+      "googleMapsUri": "https://maps.google.com/?cid=1000000000000000003"
+    }
+  ]
+}

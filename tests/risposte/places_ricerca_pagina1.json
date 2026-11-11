@@ -1,0 +1,25 @@
+{
+  "places": [
+    {
+      "id": "ChIJesempio0000001",
+      "displayName": {"text": "Officina Meccanica Esempio", "languageCode": "it"},
+      "formattedAddress": "Via dell'Esempio, 1, 40017 San Giovanni in Persiceto BO, Italia",
+      "websiteUri": "https://www.officina-esempio.example/",
+      "nationalPhoneNumber": "051 000 0001",
+      "rating": 4.7,
+      "userRatingCount": 132,
+      "businessStatus": "OPERATIONAL",
+      "primaryType": "car_repair",
+      "googleMapsUri": "https://maps.google.com/?cid=1000000000000000001"
+    },
+    {
+      "id": "ChIJesempio0000002",
+      "displayName": {"text": "Autofficina Prova", "languageCode": "it"},
+      "formattedAddress": "Via di Prova, 2, 40017 San Giovanni in Persiceto BO, Italia",
+      "businessStatus": "CLOSED_TEMPORARILY",
+      "primaryType": "car_repair",
+      "googleMapsUri": "https://maps.google.com/?cid=1000000000000000002"
+    }
+  ],
+  "nextPageToken": "token-pagina-2"
+}
