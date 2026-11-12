@@ -10,7 +10,7 @@ Guida per preparare credenziali e ambiente cloud. Alla fine lo script di verific
 | 2 | Foglio Google e account di servizio | telefono + computer |
 | 3 | Chiave Places API (New) con limiti | computer |
 | 4 | Token Meta, copiato dal sistema creator | telefono |
-| 5 | Ambiente cloud: segreti, domini, script di avvio | computer |
+| 5 | Ambiente cloud: aggiungere i segreti (domini e script già impostati) | computer |
 | 6 | Verifica | telefono |
 
 I cinque segreti che servono alla fine:
@@ -103,10 +103,10 @@ Non serve una nuova app Meta: si riusa quella del sistema creator e si copiano s
 
 ## 5. Ambiente cloud [computer]
 
-Un ambiente nuovo, solo per questo repository, con segreti e domini propri.
+L'ambiente personale `sistema-consulenza` è già creato, solo per questo repository, con rete e script di avvio impostati (punti 2 e 4). Resta da aggiungere le variabili (punto 3).
 
-1. Su <https://claude.ai/code>: selettore dell'ambiente (sotto la casella del messaggio) → **Nuovo ambiente** (*New environment*). Nome `sistema-consulenza`, ambiente personale (non condiviso).
-2. **Accesso alla rete** (*Network access*): **Limitato** (*Limited*), con la spunta su "Consenti gestori di pacchetti" (*Allow package managers*) (copre pypi.org e files.pythonhosted.org; github.com è già consentito). In **Domini consentiti** (*Allowed domains*), uno per riga:
+1. Su <https://claude.ai/code>: selettore dell'ambiente (sotto la casella del messaggio) → ambiente `sistema-consulenza` → icona delle impostazioni.
+2. **Accesso alla rete** (*Network access*), già impostato: **Limitato** (*Limited*), con la spunta su "Consenti gestori di pacchetti" (*Allow package managers*) (copre pypi.org e files.pythonhosted.org; github.com è già consentito). In **Domini consentiti** (*Allowed domains*):
 
    ```
    places.googleapis.com
@@ -129,13 +129,13 @@ Un ambiente nuovo, solo per questo repository, con segreti e domini propri.
    }'
    ```
 
-4. **Script di avvio** (*Setup script*; installa i pacchetti di `requirements.txt` quando parte una sessione):
+4. **Script di avvio** (*Setup script*), già impostato; installa i pacchetti di `requirements.txt` quando parte una sessione:
 
    ```bash
    pip install "requests>=2.31" "PyYAML>=6.0" "google-auth>=2.30" "pytest>=8.0"
    ```
 
-5. Salva. Da qui in poi scegli l'ambiente `sistema-consulenza` per le sessioni e per le attività programmate di questo repository.
+5. Salva le variabili. Da qui in poi scegli l'ambiente `sistema-consulenza` per le sessioni e per le attività programmate di questo repository.
 
 **Nota sulla sicurezza.** Le variabili d'ambiente sono salvate in chiaro nelle impostazioni dell'ambiente e ogni sessione che usa l'ambiente le può leggere: per questo l'ambiente deve restare personale e usato solo per questo repository. Il codice non stampa mai i valori dei segreti.
 
