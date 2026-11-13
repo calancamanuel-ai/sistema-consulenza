@@ -45,10 +45,13 @@ Mercato: tutta Italia. Le zone stanno in un file di configurazione. Si parte dal
 1. Punteggio dei settori.
 2. Ricerca delle attività dei settori scelti, nella zona.
 3. Analisi di ogni attività e punteggio di opportunità.
-4. Materiale personalizzato per il primo contatto.
-5. Contatto da parte di Manuel.
-6. Tracciamento, promemoria e prossimi passi.
-7. Analisi gratuita, poi preventivo a prezzo fisso.
+4. Approfondimento con ricerca web sulle attività scelte da Manuel (di solito le prime 5-10).
+5. Materiale personalizzato per il primo contatto.
+6. Contatto da parte di Manuel.
+7. Tracciamento, promemoria e prossimi passi.
+8. Analisi gratuita, poi preventivo a prezzo fisso.
+
+I passaggi 2-3 sono larghi e leggeri: Places e Instagram trovano e ordinano molte attività con gli stessi dati. Il passaggio 4 è stretto e profondo: solo sulle attività migliori, perché è più lento e consuma di più.
 
 ## Punteggio dei settori
 
@@ -113,7 +116,7 @@ Per ogni attività scelta da Manuel:
 1. **Fase 0 — Preparazione e verifica.** Manuel: foglio e account di servizio, chiave API Places, app Meta e token, segreti e domini nell'ambiente cloud. Claude Code: repository, moduli, `docs/SETUP.md`, script di verifica. Fatto quando: lo script legge e scrive il foglio, una ricerca Places restituisce attività della zona e Business Discovery restituisce i dati di un account.
 2. **Fase 1 — Punteggio dei settori.** Istruzioni in `prompts/`, classifica in `data/settori.csv` nel repository (nessun dato personale). Fatto quando: Manuel ha controllato la classifica e scelto 3 settori.
 3. **Fase 2 — Ricerca e analisi delle attività.** Ricerca nella zona, dati da Maps, Instagram e sito, punteggio di opportunità, motivazione e automazioni proposte. Fatto quando: 30 attività nel foglio, ordinate, e Manuel ne ha controllate 5 a mano.
-4. **Fase 3 — Materiale personalizzato.** Scheda, demo personalizzata e cosa dire, per le attività scelte da Manuel, salvati su Drive. Fatto quando: il materiale per 5 attività è pronto e Manuel lo approva.
+4. **Fase 3 — Approfondimento e materiale personalizzato.** Per ogni attività scelta da Manuel: ricerca web su sito, servizi, notizie, recensioni e titolare, salvata in una breve scheda; poi scheda di una pagina, demo personalizzata e cosa dire, salvati su Drive. Fatto quando: il materiale per 5 attività è pronto e Manuel lo approva.
 5. **Fase 4 — Tracciamento e promemoria.** Stati dei contatti, prossimo passo con data, promemoria e riepilogo giornaliero. Fatto quando: il ciclo funziona su 5 contatti di prova.
 6. **STOP — Contatti reali.** 20-30 attività in 3-4 settimane. Si confrontano punteggi e risultati e si ritarano i pesi.
 
@@ -124,7 +127,7 @@ Per ogni attività scelta da Manuel:
 | 0 — Preparazione e verifica | Opus | Alto |
 | 1 — Punteggio dei settori | Opus | Alto |
 | 2 — Ricerca e analisi | Sonnet | Normale |
-| 3 — Materiale personalizzato | Sonnet | Normale |
+| 3 — Approfondimento e materiale | Opus per l'approfondimento, Sonnet per il materiale | Alto / Normale |
 | 4 — Tracciamento | Sonnet | Normale |
 | Attività programmate di ogni giorno | Sonnet | Normale |
 
