@@ -89,7 +89,7 @@ def suggerimento(passo: str, errore: Exception) -> str:
         if passo == "Foglio Google" and errore.stato_http in (403, 404):
             return " -> controlla SHEET_ID e che il foglio sia condiviso come Editor con l'account di servizio"
         if passo == "Instagram" and errore.codice == 190:
-            return " -> token scaduto o non valido: copia quello aggiornato (docs/SETUP.md, passo 4)"
+            return " -> token scaduto o non valido: rinnovalo (docs/SETUP.md, passo 4c)"
     return ""
 
 

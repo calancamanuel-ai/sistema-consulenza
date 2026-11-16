@@ -9,7 +9,7 @@ Guida per preparare credenziali e ambiente cloud. Alla fine lo script di verific
 | 1 | Progetto Google Cloud, API e fatturazione | computer |
 | 2 | Foglio Google e account di servizio | telefono + computer |
 | 3 | Chiave Places API (New) con limiti | computer |
-| 4 | Token Meta, copiato dal sistema creator | telefono |
+| 4 | App Meta, token Instagram e ID dell'account | telefono + computer |
 | 5 | Ambiente cloud: aggiungere i segreti (domini e script già impostati) | computer |
 | 6 | Verifica | telefono |
 
@@ -20,10 +20,10 @@ I cinque segreti che servono alla fine:
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Tutto il file JSON della chiave dell'account di servizio | Passo 2 |
 | `SHEET_ID` | Link del foglio (o solo il suo ID) | Passo 2 |
 | `PLACES_API_KEY` | Chiave API limitata a Places API (New) | Passo 3 |
-| `IG_ACCESS_TOKEN` | Token Meta del sistema creator | Passo 4 |
+| `IG_ACCESS_TOKEN` | Token Meta di lunga durata (circa 60 giorni) | Passo 4 |
 | `IG_USER_ID` | ID numerico dell'account Instagram professionale (inizia di solito con 1784) | Passo 4 |
 
-Si usa il tuo account Google attuale. Progetto, foglio e account di servizio sono nuovi e separati da quelli del sistema creator.
+Si usa il tuo account Google attuale. Progetto, foglio e account di servizio sono nuovi e separati da quelli del sistema creator; l'app Meta invece sarà condivisa.
 
 ---
 
@@ -96,19 +96,63 @@ Places fa pagare ogni richiesta in base al campo più costoso tra quelli chiesti
 
 Ogni ricerca restituisce fino a 20 attività. Per le 30-100 attività della Fase 2 servono qualche decina di richieste al mese, dentro la quota gratuita. Le quote gratuite valgono per tipo di richiesta e si azzerano ogni mese. I prezzi vengono da fonti di novembre 2026: confermali su <https://developers.google.com/maps/billing-and-pricing/pricing>.
 
-## 4. Token Meta dal sistema creator [telefono]
+## 4. App Meta e token Instagram
 
-Non serve una nuova app Meta: si riusa quella del sistema creator e si copiano solo i due valori.
+Il sistema creator non è ancora attivo, quindi l'app Meta si crea adesso, con un nome generico. Quando attiverai il sistema creator userà la stessa app: basterà copiare lì gli stessi due valori, `IG_ACCESS_TOKEN` e `IG_USER_ID`.
 
-1. Apri le impostazioni dell'ambiente cloud del sistema creator e copia i valori di:
-   - il token di accesso → diventa `IG_ACCESS_TOKEN`;
-   - l'ID dell'account Instagram professionale → diventa `IG_USER_ID`. È un numero (di solito inizia con 1784), non il nome utente.
+Cosa serve:
 
-   Se lì le variabili hanno nomi diversi, copia i valori corrispondenti.
-2. Controlla la scadenza del token su <https://developers.facebook.com/tools/debug/accesstoken>: incolla il token → **Debug** → riga **Expires**.
-   - **Never**: non scade;
-   - una data: è un token di lunga durata (circa 60 giorni). Quando lo rinnovi per il sistema creator, aggiornalo anche qui. Mettiti un promemoria una settimana prima della data.
-3. I limiti di chiamate dell'app Meta sono condivisi tra i due sistemi. Con i volumi previsti (decine di account al giorno) non è un problema.
+- un tuo account Instagram **professionale** (aziendale o creator). È l'account da cui il sistema legge i profili delle attività; le attività non vedono niente;
+- una **Pagina Facebook** collegata a quell'account;
+- il tuo profilo Facebook personale, che diventa il tuo account sviluppatore.
+
+L'app resta in modalità sviluppo e la usi solo tu, che ne sei amministratore: non servono la verifica dell'azienda né la revisione dell'app da parte di Meta.
+
+### 4a. Account Instagram professionale e Pagina Facebook [telefono]
+
+1. App Instagram → profilo → menu ☰ → **Impostazioni e privacy** → **Tipo di account e strumenti** → **Passa a un account professionale** → Azienda o Creator. Se l'account è già professionale, salta.
+2. Profilo → **Modifica profilo** → **Pagina** → collega una Pagina Facebook esistente o creane una. Va bene una Pagina semplice con il nome della consulenza.
+
+   Se non trovi la voce, fallo dalla Pagina Facebook: **Impostazioni** → **Account collegati** → **Instagram** → **Collega account**.
+
+### 4b. Account sviluppatore e app [computer]
+
+1. Apri <https://developers.facebook.com> con il tuo profilo Facebook → **Inizia** (*Get started*) e completa la registrazione. Se sei già registrato, salta.
+2. Vai su <https://developers.facebook.com/apps> → **Crea app**. La procedura chiede queste cose, non sempre in quest'ordine:
+   - **nome dell'app**: generico e senza le parole Instagram, Facebook o Meta, che Meta rifiuta. Per esempio `Analisi Social MC`. Email di contatto: la tua;
+   - **caso d'uso**: **Altro** (*Other*);
+   - **tipo di app**: **Business**;
+   - **portfolio business**: salta (*Non collegare ora*). Serve solo per pubblicare l'app, e qui non si pubblica.
+
+   Poi **Crea app**; può chiederti la password di Facebook.
+3. Nella dashboard dell'app:
+   - **Aggiungi prodotto** → **Instagram** → **Configura** (*Set up*) → scegli **Configurazione dell'API con accesso tramite Facebook** (*API setup with Facebook login*);
+   - **Aggiungi prodotto** → **Facebook Login for Business** → **Configura**, lasciando le impostazioni predefinite.
+4. Lascia l'app **In sviluppo** (*Development*): non pubblicarla.
+
+### 4c. Token e ID dell'account [computer]
+
+1. Apri il **Graph API Explorer**: <https://developers.facebook.com/tools/explorer>.
+2. Nel pannello a destra: **Meta App** → la tua app; **User or Page** → **Get User Access Token**.
+3. In **Permissions** aggiungi questi permessi:
+   - `pages_show_list`
+   - `pages_read_engagement`
+   - `instagram_basic`
+   - `instagram_manage_insights`
+   - `business_management` e `ads_read`: servono se la Pagina è gestita da Meta Business Suite. Nel dubbio aggiungili.
+4. **Generate Access Token**. Nella finestra di Facebook continua con il tuo profilo; quando ti chiede a cosa dare accesso, seleziona **la tua Pagina** e **il tuo account Instagram** → **Salva**.
+5. **ID dell'account.** Nel campo della richiesta scrivi `me/accounts?fields=name,instagram_business_account` → **Submit**. Nella risposta, sotto la tua Pagina, il numero in `instagram_business_account` → `id` è `IG_USER_ID` (di solito inizia con 1784).
+   - Risposta vuota (`"data": []`): rigenera il token (punto 4) selezionando la Pagina, con `business_management` tra i permessi.
+   - Manca `instagram_business_account`: Instagram non è collegato a quella Pagina (passo 4a).
+6. **Prova.** Nel campo della richiesta scrivi `IG_USER_ID?fields=business_discovery.username(NOME){followers_count,media_count}`. Al posto di `IG_USER_ID` metti il numero del punto 5; al posto di `NOME`, il nome utente di un'attività con profilo aziendale. Poi **Submit**: se compaiono follower e numero di post, funziona.
+7. **Token di lunga durata.** Il token nel campo **Access Token** dura poche ore:
+   - copialo e apri <https://developers.facebook.com/tools/debug/accesstoken>;
+   - incollalo → **Debug** → in fondo alla pagina **Estendi token d'accesso** (*Extend Access Token*);
+   - copia il nuovo token che compare: è `IG_ACCESS_TOKEN`;
+   - controlla con **Debug** sul nuovo token che **Expires** sia tra circa 60 giorni.
+8. **Promemoria.** Mettiti un promemoria tra 50 giorni. Per rinnovare il token rifai i punti 1-4 e 7, poi aggiorna `IG_ACCESS_TOKEN` nell'ambiente (passo 5), e anche nell'ambiente del sistema creator quando ci sarà. Se il token scade, la verifica e le attività programmate danno l'errore "token scaduto o non valido".
+
+Il token dà accesso in lettura alla tua Pagina e al tuo Instagram: trattalo come una password e non incollarlo in chat. I limiti di chiamate dell'app saranno condivisi con il sistema creator; con i volumi previsti (decine di account al giorno) non è un problema.
 
 ## 5. Ambiente cloud [computer]
 
@@ -171,6 +215,6 @@ L'ambiente personale `sistema-consulenza` è già creato, solo per questo reposi
 | `... API has not been used in project ...` | API non attivata | Passo 1, punto 3 |
 | Places: `API key not valid` | Chiave copiata male | Ricopia la chiave del passo 3 |
 | Places: errore 403 con `PERMISSION_DENIED` | Fatturazione non collegata o chiave limitata a un'altra API | Passo 1 punto 4, passo 3a |
-| Instagram: token scaduto o non valido | Token rinnovato nel sistema creator | Ricopia il token (passo 4) |
+| Instagram: token scaduto o non valido | Token di 60 giorni scaduto o copiato male | Rinnova il token (passo 4c, punti 7-8) |
 | Instagram: account inesistente o non professionale | Il nome utente è un account personale | Prova con un account aziendale |
 | `ConnectionError` o `ProxyError` | Dominio non consentito | Passo 5, punto 2 |
