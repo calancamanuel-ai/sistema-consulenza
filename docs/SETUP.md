@@ -52,7 +52,16 @@ Si usa il tuo account Google attuale. Progetto, foglio e account di servizio son
 4. Quel file è una password: non metterlo nel repository e non mandarlo in chat. Dopo il passo 5 cancellalo dai download (o tienilo solo in un gestore di password).
 5. Copia l'indirizzo email dell'account di servizio, del tipo `consulenza-foglio@consulenza-pmi.iam.gserviceaccount.com` (è anche la voce `client_email` nel file).
 
-Se la creazione della chiave è bloccata da un criterio dell'organizzazione, il progetto è dentro un Workspace: con un account Gmail personale non succede.
+### Se la creazione della chiave è bloccata [computer]
+
+Il messaggio "Creazione di chiavi del service account disabilitata" (`iam.disableServiceAccountKeyCreation`) vuol dire che l'account con cui sei nella console fa parte di un'organizzazione (un Workspace) che blocca queste chiavi. Si sblocca solo per questo progetto:
+
+1. Selettore in alto → scegli l'**organizzazione**, non il progetto → **IAM e amministrazione** → **IAM** → **Concedi l'accesso**: il tuo account, ruolo **Amministratore policy dell'organizzazione** (*Organization Policy Administrator*) → **Salva**. Puoi farlo solo se sei amministratore dell'organizzazione.
+2. Selettore in alto → progetto `consulenza-pmi` → **IAM e amministrazione** → **Policy dell'organizzazione** → filtra per `disableServiceAccountKeyCreation`. Possono esserci due voci, `iam.disableServiceAccountKeyCreation` e `iam.managed.disableServiceAccountKeyCreation`. Per ognuna: **Gestisci policy** → **Sostituisci la policy dell'elemento padre** (*Override parent's policy*) → applicazione **Off** → **Imposta policy**.
+3. Aspetta qualche minuto e ricrea la chiave (punto 3 qui sopra).
+4. Creata la chiave, rimetti il blocco: stesse voci → **Gestisci policy** → **Eredita la policy dell'elemento padre** (*Inherit parent's policy*) → **Imposta policy**. La chiave già creata continua a funzionare; il blocco vale solo per le chiavi nuove.
+
+Se non sei amministratore dell'organizzazione, o al punto 2 non puoi sostituire la policy: rifai i passi 1, 2b e 3 con il tuo account Gmail personale, che non ha organizzazione e quindi non ha questo blocco.
 
 ### 2c. Condividi il foglio con l'account di servizio [telefono]
 
