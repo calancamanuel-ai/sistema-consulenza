@@ -137,6 +137,8 @@ L'app resta in modalità sviluppo e la usi solo tu, che ne sei amministratore: n
 3. Nella dashboard dell'app:
    - **Aggiungi prodotto** → **Instagram** → **Configura** (*Set up*) → scegli **Configurazione dell'API con accesso tramite Facebook** (*API setup with Facebook login*);
    - **Aggiungi prodotto** → **Facebook Login for Business** → **Configura**, lasciando le impostazioni predefinite.
+
+   Meta segnala la configurazione con Facebook Login come obsoleta e consiglia quella con "login unificato" (*Unified login*). Quella con Facebook Login però funziona ancora ed è quella documentata per Business Discovery: per ora si usa questa.
 4. Lascia l'app **In sviluppo** (*Development*): non pubblicarla.
 
 ### 4c. Token e ID dell'account [computer]
