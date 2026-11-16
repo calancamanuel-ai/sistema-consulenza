@@ -260,3 +260,38 @@ def test_da_ambiente_senza_variabili():
         da_ambiente({"SHEET_ID": "1AbC-_xyz"})
     with pytest.raises(VariabileMancante, match="SHEET_ID"):
         da_ambiente({"GOOGLE_SERVICE_ACCOUNT_JSON": json.dumps(chiave_finta())})
+
+
+def test_riscrivi_sostituisce_le_righe_e_pulisce_quelle_in_piu():
+    lavoro, http = foglio({"values": [["place_id", "nome", "punteggio"]]}, {}, {})
+
+    lavoro.riscrivi(
+        "Attività",
+        [{"place_id": "p2", "nome": "Gommista Demo", "punteggio": 4}, {"place_id": "p1", "punteggio": None}],
+    )
+
+    leggi, scrivi, pulisci = http.richieste
+    assert leggi["url"] == url_valori("'Attività'!1:1")
+    assert (scrivi["metodo"], scrivi["url"]) == ("PUT", url_valori("'Attività'!A2"))
+    assert scrivi["params"] == {"valueInputOption": "RAW"}
+    assert scrivi["json"] == {"values": [["p2", "Gommista Demo", 4], ["p1", "", ""]]}
+    # Prima si scrive, poi si pulisce sotto: se la scrittura fallisce i dati restano.
+    assert (pulisci["metodo"], pulisci["url"]) == ("POST", url_valori("'Attività'!A4:ZZ") + ":clear")
+
+
+def test_riscrivi_rifiuta_colonne_sconosciute_senza_scrivere():
+    lavoro, http = foglio({"values": [["place_id", "nome"]]})
+
+    with pytest.raises(ValueError, match="punteggo"):
+        lavoro.riscrivi("Attività", [{"place_id": "p1", "punteggo": 4}])
+
+    assert len(http.richieste) == 1
+
+
+def test_riscrivi_senza_righe_non_cancella_niente():
+    lavoro, http = foglio()
+
+    with pytest.raises(ValueError, match="nessuna riga"):
+        lavoro.riscrivi("Attività", [])
+
+    assert http.richieste == []

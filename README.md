@@ -10,11 +10,11 @@ per il primo contatto. Il sistema non invia niente: il contatto lo fa Manuel.
 
 | Cartella | Contenuto |
 | --- | --- |
-| `src/consulenza/` | Moduli: `places` (Google Maps), `instagram` (Business Discovery), `opportunita` (punteggio delle attività), `settori` (classifica dei settori), `sheets` (foglio Google) |
+| `src/consulenza/` | Moduli: `places` (Google Maps), `instagram` (Business Discovery), `opportunita` (punteggio delle attività), `attivita` (righe della scheda Attività), `settori` (classifica dei settori), `sheets` (foglio Google) |
 | `config/` | `zone.yaml` (zone di ricerca), `punteggio.yaml` (pesi dei settori e punti dei segnali) |
 | `data/` | `settori.csv`, classifica dei settori (nessun dato personale) |
-| `prompts/` | Istruzioni per le sessioni di Claude (`punteggio-settori.md`) |
-| `scripts/` | `verifica.py` (controllo delle credenziali reali), `classifica_settori.py` (punteggi e ordine di `data/settori.csv`) |
+| `prompts/` | Istruzioni per le sessioni di Claude (`punteggio-settori.md`, `analisi-attivita.md`) |
+| `scripts/` | `verifica.py` (controllo delle credenziali reali), `classifica_settori.py` (punteggi e ordine di `data/settori.csv`), `attivita.py` (ricerca e analisi delle attività) |
 | `tests/` | Test con risposte simulate, nessuna chiamata reale |
 
 ## Comandi
@@ -33,4 +33,8 @@ python scripts/verifica.py nome_utente_instagram
 
 ```bash
 python scripts/classifica_settori.py
+```
+
+```bash
+python scripts/attivita.py --help
 ```

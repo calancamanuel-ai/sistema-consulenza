@@ -146,6 +146,32 @@ class Foglio:
         )
         controlla(risposta, "Sheets")
 
+    def riscrivi(self, scheda: str, righe: list[dict]) -> None:
+        """Sostituisce tutte le righe sotto le intestazioni (per aggiornare e riordinare).
+
+        Le righe vanno lette prima con leggi(), così si conservano le colonne aggiunte a mano.
+        """
+        if not righe:
+            raise ValueError("riscrivi: nessuna riga da scrivere, il foglio resta com'è")
+        intestazione = self._intestazione(scheda)
+        for riga in righe:
+            sconosciute = [c for c in riga if c not in intestazione]
+            if sconosciute:
+                raise ValueError(f"Colonne sconosciute nella scheda {scheda}: {sconosciute}")
+        valori = [["" if r.get(c) is None else r[c] for c in intestazione] for r in righe]
+        risposta = self.http.put(
+            self._url_valori(scheda, "A2"),
+            params={"valueInputOption": "RAW"},
+            json={"values": valori},
+            timeout=TIMEOUT,
+        )
+        controlla(risposta, "Sheets")
+        # Solo dopo la scrittura si puliscono le righe rimaste sotto.
+        risposta = self.http.post(
+            self._url_valori(scheda, f"A{len(righe) + 2}:ZZ") + ":clear", timeout=TIMEOUT
+        )
+        controlla(risposta, "Sheets")
+
 
 def da_ambiente(
     ambiente: Mapping[str, str] | None = None, schede: Mapping[str, list[str]] = SCHEDE

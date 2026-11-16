@@ -19,6 +19,8 @@ settori:
     dati_sensibili: 0.8        # per esempio studi sanitari
 
 opportunita:
+  # Da quante recensioni su Maps vale il segnale molte_recensioni (lo calcola il codice).
+  soglia_molte_recensioni: 100
   # Punti dei segnali della singola attività; il totale ordina le attività da contattare.
   punti:
     instagram_attivo: 2        # buon materiale e post regolari
