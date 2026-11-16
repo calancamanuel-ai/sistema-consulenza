@@ -113,7 +113,7 @@ Per ogni attività scelta da Manuel:
 ## Fasi
 
 1. **Fase 0 — Preparazione e verifica.** Manuel: foglio e account di servizio, chiave API Places, app Meta e token, segreti e domini nell'ambiente cloud. Claude Code: repository, moduli, `docs/SETUP.md`, script di verifica. Fatto quando: lo script legge e scrive il foglio, una ricerca Places restituisce attività della zona e Business Discovery restituisce i dati di un account.
-2. **Fase 1 — Punteggio dei settori.** Istruzioni in `prompts/`, classifica in `data/settori.csv` nel repository (nessun dato personale). Fatto quando: Manuel ha controllato la classifica e scelto 3 settori.
+2. **Fase 1 — Punteggio dei settori.** Istruzioni in `prompts/`, classifica in `data/settori.csv` nel repository (nessun dato personale). Fatto quando: Manuel ha controllato la classifica e scelto 3 settori. **Fatta il 16 novembre 2026:** settori scelti parrucchieri e barbieri, centri estetici, officine meccaniche.
 3. **Fase 2 — Ricerca e analisi delle attività.** Ricerca nella zona, dati da Maps, Instagram e sito, punteggio di opportunità, motivazione e automazioni proposte. Fatto quando: 30 attività nel foglio, ordinate, e Manuel ne ha controllate 5 a mano.
 4. **Fase 3 — Approfondimento e materiale personalizzato.** Per ogni attività scelta da Manuel: ricerca web su sito, servizi, notizie, recensioni e titolare, salvata in una breve scheda; poi scheda di una pagina, demo personalizzata e cosa dire, salvati su Drive. Fatto quando: il materiale per 5 attività è pronto e Manuel lo approva.
 5. **Fase 4 — Tracciamento e promemoria.** Stati dei contatti, prossimo passo con data, promemoria e riepilogo giornaliero. Fatto quando: il ciclo funziona su 5 contatti di prova.
