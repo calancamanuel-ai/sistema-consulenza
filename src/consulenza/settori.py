@@ -16,7 +16,6 @@ CRITERI = (
     "capacita_spesa",
     "dimensione_mercato",
     "potenziale_ricorrente",
-    "voucher_incentivi",
     "facilita_contatto",
     "maturita_digitale",
     "concorrenza",
@@ -35,7 +34,7 @@ def carica_regole(percorso: Path = CARTELLA / "punteggio.yaml") -> tuple[dict[st
 
 
 def punteggio_base(voti: Mapping[str, object], pesi: Mapping[str, int]) -> float:
-    """Somma di (peso × voto) ÷ 5: da 20 a 100 se i pesi sommano a 100."""
+    """Media dei voti pesata e riportata su scala da 20 a 100: somma(peso × voto) ÷ somma(pesi) × 20."""
     totale = 0
     for criterio in CRITERI:
         if criterio not in voti:
@@ -46,7 +45,7 @@ def punteggio_base(voti: Mapping[str, object], pesi: Mapping[str, int]) -> float
         if voto != int(voto) or not 1 <= voto <= 5:
             raise ValueError(f"Voto di {criterio} non valido ({voto}): deve essere un intero da 1 a 5")
         totale += pesi[criterio] * int(voto)
-    return totale / 5
+    return totale / sum(pesi[c] for c in CRITERI) * 20
 
 
 def _controlla_prove(settore: str, prove: str) -> None:

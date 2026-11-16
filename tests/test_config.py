@@ -34,12 +34,11 @@ def test_pesi_dei_settori_come_nel_piano():
         "capacita_spesa": 15,
         "dimensione_mercato": 15,
         "potenziale_ricorrente": 10,
-        "voucher_incentivi": 10,
         "facilita_contatto": 10,
         "maturita_digitale": 10,
         "concorrenza": 5,
     }
-    assert sum(pesi.values()) == 100
+    assert sum(pesi.values()) == 90
 
 
 def test_moltiplicatori_di_rischio_come_nel_piano():

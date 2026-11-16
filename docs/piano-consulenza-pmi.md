@@ -55,7 +55,7 @@ I passaggi 2-3 sono larghi e leggeri: Places e Instagram trovano e ordinano molt
 
 ## Punteggio dei settori
 
-Voti da 1 a 5 con le prove (link). Base = somma di (peso × voto) ÷ 5, da 20 a 100. Pesi di partenza, da ritarare dopo le prime classifiche e dopo i primi contatti.
+Voti da 1 a 5 con le prove (link). Base = somma di (peso × voto) ÷ somma dei pesi × 20, da 20 a 100. Voucher e incentivi esclusi da novembre 2026: non si sa cosa ci sarà nel 2027. Pesi di partenza, da ritarare dopo le prime classifiche e dopo i primi contatti.
 
 | Criterio | Peso | Come si misura | Voto 5 | Voto 1 |
 | --- | --- | --- | --- | --- |
@@ -63,7 +63,6 @@ Voti da 1 a 5 con le prove (link). Base = somma di (peso × voto) ÷ 5, da 20 a 
 | Capacità di spesa | 15 | Margini e scontrino tipici del settore | Buoni margini, clienti di valore alto | Margini molto bassi |
 | Dimensione del mercato | 15 | Numero di attività indipendenti del settore in Italia, stimato con ricerche Maps su un campione di città | Migliaia di attività | Poche centinaia |
 | Potenziale ricorrente | 10 | Bisogno di assistenza mensile, hosting, aggiornamenti | Strumenti usati ogni giorno, da mantenere | Lavoro una tantum |
-| Voucher e incentivi | 10 | Il settore rientra nei voucher digitali delle Camere di Commercio | Sì, tipicamente | No |
 | Facilità di contatto | 10 | Titolare raggiungibile di persona o al telefono, presenza nelle associazioni di categoria | Titolare presente in sede | Decisioni prese altrove |
 | Maturità digitale "giusta" | 10 | Usano già un minimo di strumenti ma senza automazioni | Social attivi, poco altro | Nessun interesse per il digitale, oppure già tutto automatizzato |
 | Concorrenza | 5 | Altri fornitori che servono il settore in zona | Pochi | Settore già servito da gestionali di settore completi |

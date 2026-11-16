@@ -17,7 +17,6 @@ PESI = {
     "capacita_spesa": 15,
     "dimensione_mercato": 15,
     "potenziale_ricorrente": 10,
-    "voucher_incentivi": 10,
     "facilita_contatto": 10,
     "maturita_digitale": 10,
     "concorrenza": 5,
@@ -47,8 +46,15 @@ def test_base_minima_e_massima():
 
 def test_base_pesata():
     voti = {c: 1 for c in CRITERI} | {"lavoro_ripetitivo": 5}
-    # (25×5 + 75×1) / 5
-    assert punteggio_base(voti, PESI) == 40
+    # (25×5 + 65×1) / 90 × 20
+    assert punteggio_base(voti, PESI) == pytest.approx(42.22, abs=0.01)
+
+
+def test_i_pesi_non_devono_sommare_a_100():
+    pesi = {c: 1 for c in CRITERI}
+
+    assert punteggio_base({c: 1 for c in CRITERI}, pesi) == 20
+    assert punteggio_base({c: 5 for c in CRITERI}, pesi) == 100
 
 
 @pytest.mark.parametrize("voto", [0, 6, 2.5])
@@ -91,8 +97,9 @@ def test_punteggio_arrotondato_a_un_decimale():
 
     (risultato,) = classifica([r], PESI, MOLTIPLICATORI)
 
-    assert risultato["punteggio_base"] == "21.0"
-    assert risultato["punteggio"] == "16.8"
+    # (85×1 + 5×2) / 90 × 20 = 21,11; × 0,8 = 16,89
+    assert risultato["punteggio_base"] == "21.1"
+    assert risultato["punteggio"] == "16.9"
 
 
 def test_moltiplicatore_sconosciuto():
