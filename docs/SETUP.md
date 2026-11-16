@@ -122,6 +122,8 @@ L'app resta in modalità sviluppo e la usi solo tu, che ne sei amministratore: n
 
    Attenzione: aggiungere Instagram al **Centro gestione account** (*Accounts Center*) non basta. Serve il collegamento con la Pagina.
 
+   La Pagina deve essere gestita, con controllo completo, dallo stesso profilo Facebook con cui crei l'app e il token (passi 4b e 4c). Chi visita la Pagina non vede il tuo profilo personale.
+
 ### 4b. Account sviluppatore e app [computer]
 
 1. Apri <https://developers.facebook.com> con il tuo profilo Facebook → **Inizia** (*Get started*) e completa la registrazione. Se sei già registrato, salta.
