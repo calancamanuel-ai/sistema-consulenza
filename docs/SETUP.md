@@ -111,9 +111,16 @@ L'app resta in modalità sviluppo e la usi solo tu, che ne sei amministratore: n
 ### 4a. Account Instagram professionale e Pagina Facebook [telefono]
 
 1. App Instagram → profilo → menu ☰ → **Impostazioni e privacy** → **Tipo di account e strumenti** → **Passa a un account professionale** → Azienda o Creator. Se l'account è già professionale, salta.
-2. Profilo → **Modifica profilo** → **Pagina** → collega una Pagina Facebook esistente o creane una. Va bene una Pagina semplice con il nome della consulenza.
+2. Profilo → **Modifica profilo** → **Pagina** → collega una Pagina Facebook esistente o creane una. Va bene una Pagina semplice con il nome della consulenza. La voce **Pagina** c'è solo nell'app per telefono e solo per gli account professionali: su instagram.com dal computer non compare.
 
-   Se non trovi la voce, fallo dalla Pagina Facebook: **Impostazioni** → **Account collegati** → **Instagram** → **Collega account**.
+   Da computer si collega dal lato Facebook:
+   - se non hai una Pagina, creala su <https://www.facebook.com/pages/create>;
+   - su facebook.com passa al profilo della Pagina (foto in alto a destra → nome della Pagina);
+   - **Impostazioni e privacy** → **Impostazioni** → **Account collegati** → **Instagram** → **Collega account** e accedi con il tuo Instagram.
+
+   Se la voce non c'è, usa Meta Business Suite: <https://business.facebook.com> → **Impostazioni** → **Account Instagram** → **Collega**.
+
+   Attenzione: aggiungere Instagram al **Centro gestione account** (*Accounts Center*) non basta. Serve il collegamento con la Pagina.
 
 ### 4b. Account sviluppatore e app [computer]
 
