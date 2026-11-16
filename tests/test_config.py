@@ -62,12 +62,10 @@ def test_punti_dei_segnali_come_nel_piano():
     }
 
 
-def test_settori_csv_vuoto_con_una_colonna_per_criterio():
+def test_settori_csv_con_una_colonna_per_criterio():
     with open(RADICE / "data" / "settori.csv", encoding="utf-8", newline="") as f:
-        righe = list(csv.reader(f))
+        intestazioni = next(csv.reader(f))
 
-    assert len(righe) == 1, "settori.csv deve contenere solo le intestazioni"
-    intestazioni = righe[0]
     criteri = list(carica_punteggio()["settori"]["pesi"])
     assert intestazioni[0] == "settore"
     assert intestazioni[1 : 1 + len(criteri)] == criteri
