@@ -54,6 +54,11 @@ def test_usa_i_punti_ricevuti():
     assert calcola({"instagram_attivo", "nessun_sito"}, punti).totale == 8
 
 
+def test_nessun_sito_con_prenotazione_su_piattaforma():
+    # Senza sito proprio si può prenotare lo stesso su Treatwell o Fresha.
+    assert calcola({"instagram_attivo", "nessun_sito", "prenotazione_moderna"}, PUNTI).totale == 3
+
+
 def test_segnale_sconosciuto():
     with pytest.raises(ValueError, match="instagram_ativo"):
         calcola({"instagram_ativo"}, PUNTI)
@@ -64,7 +69,6 @@ def test_segnale_sconosciuto():
     [
         {"indipendente", "catena"},
         {"nessun_sito", "sito_debole"},
-        {"nessun_sito", "prenotazione_moderna"},
         {"nessuna_presenza", "instagram_attivo"},
         {"nessuna_presenza", "sito_debole"},
     ],

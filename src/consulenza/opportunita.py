@@ -25,7 +25,6 @@ SEGNALI = (
 INCOMPATIBILI = (
     ("indipendente", "catena"),
     ("nessun_sito", "sito_debole"),
-    ("nessun_sito", "prenotazione_moderna"),
     ("nessuna_presenza", "instagram_attivo"),
     ("nessuna_presenza", "sito_debole"),
     ("nessuna_presenza", "prenotazione_moderna"),

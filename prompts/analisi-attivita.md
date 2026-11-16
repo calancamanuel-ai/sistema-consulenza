@@ -10,6 +10,8 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
 - Instagram: i dati del profilo si leggono solo con `attivita.py instagram` (API ufficiale).
   Il nome utente si trova sul sito dell'attività, nella scheda Maps o con una ricerca web;
   non si leggono pagine di instagram.com.
+- Il foglio accetta circa 60 scritture al minuto: ogni `nota` e ogni `analizza` riscrive la scheda,
+  quindi tra un comando e l'altro serve qualche secondo di pausa.
 - Places costa a richiesta: una ricerca restituisce fino a 20 attività. Non ripetere ricerche già
   fatte (il foglio salta comunque i doppioni) e non chiedere più risultati del necessario.
 
@@ -41,7 +43,7 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    | `sito_debole` | Sito vecchio, scomodo dal telefono, oppure senza prenotazione e senza contatto rapido |
    | `indipendente` | Attività del titolare, senza insegna di catena |
    | `catena` | Franchising, catena o rete con sito e prenotazioni gestiti dalla sede centrale |
-   | `prenotazione_moderna` | Prenotazione online completa (Treatwell, Fresha, sistema proprio con agenda) |
+   | `prenotazione_moderna` | Prenotazione online completa (Treatwell, Fresha, sistema proprio con agenda), anche senza sito proprio. Le schede Fresha con "Call to book" non sono affiliate e non contano |
    | `nessuna_presenza` | Nessun sito e nessun social attivo |
 
    `molte_recensioni` non si indica: lo aggiunge il codice da 100 recensioni su Maps in su.
