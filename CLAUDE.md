@@ -9,6 +9,13 @@
 - Il sistema non invia email né messaggi: prepara il materiale, il contatto lo fa Manuel.
 - Nomi e recapiti di persone solo nel foglio Google, mai nel repository (neanche nei test).
 - Segreti solo da variabili d'ambiente (`GOOGLE_SERVICE_ACCOUNT_JSON`, `SHEET_ID`, `PLACES_API_KEY`,
-  `IG_ACCESS_TOKEN`, `IG_USER_ID`); mai stamparli, mai metterli in URL o file.
-- Instagram solo con l'API ufficiale (Business Discovery), nessuna raccolta di dati fuori dall'API.
+  `IG_ACCESS_TOKEN`, `IG_USER_ID`, `APIFY_TOKEN`); mai stamparli, mai metterli in URL o file.
+  Il connettore Apify, se c'è, si usa al posto di `APIFY_TOKEN`.
+- Instagram:
+  - account business: dati, post, foto e video solo con l'API ufficiale (Business Discovery);
+  - account non business dell'attività: Apify, solo i post pubblici (date, numeri, didascalie, video
+    e copertine, per esempio con la skill `guarda-reel`);
+  - account personali di persone (titolari, collaboratori, clienti): mai;
+  - Apify serve anche a trovare il nome utente di un'attività e a leggere i siti delle attività che
+    dalla sessione non si aprono. Video e trascrizioni stanno in `analisi/`, fuori dal repository.
 - Testi, nomi e commenti in italiano.

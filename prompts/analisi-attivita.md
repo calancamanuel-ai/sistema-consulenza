@@ -7,9 +7,10 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
 
 - Nomi e recapiti di persone (titolari, collaboratori) non vanno né nel repository né nella scheda
   Attività: se servono, vanno nella scheda Contatti, dalla Fase 3.
-- Instagram: i dati del profilo si leggono solo con `attivita.py instagram` (API ufficiale).
-  Il nome utente si trova sul sito dell'attività, nella scheda Maps o con una ricerca web;
-  non si leggono pagine di instagram.com.
+- Instagram (regole in `CLAUDE.md`): gli account business si leggono solo con
+  `attivita.py instagram` (API ufficiale); Apify (connettore, o `APIFY_TOKEN`) solo per trovare il
+  nome utente e per i post pubblici dell'account non business dell'attività; mai account
+  personali di persone.
 - Il foglio accetta circa 60 scritture al minuto: ogni `nota` e ogni `analizza` riscrive la scheda,
   quindi tra un comando e l'altro serve qualche secondo di pausa.
 - Places costa a richiesta: una ricerca restituisce fino a 20 attività. Non ripetere ricerche già
@@ -27,13 +28,22 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    (centri estetici), `officina meccanica` (officine meccaniche).
 2. **Sito.** Se c'è, leggilo (solo in https: la rete dell'ambiente non apre gli indirizzi http): è aggiornato, si legge bene dal telefono, c'è la prenotazione
    online, c'è un contatto rapido (WhatsApp, modulo)? Cerca anche il link a Instagram.
-   Se il sito non si apre, scrivilo nelle note. Le osservazioni si salvano subito con
+   Se il sito non si apre da qui (anche solo http o protetto da controlli anti-bot), leggilo con
+   lo strumento `apify--web-fetch` del connettore Apify; se non si apre nemmeno così, scrivilo
+   nelle note. Le osservazioni si salvano subito con
    `python scripts/attivita.py nota PLACE_ID "testo"`, che si aggiunge alla nota esistente.
 3. **Instagram.** Trovato il nome utente: `python scripts/attivita.py instagram NOME`.
    Se l'account non è professionale, l'API non lo legge: annotalo nelle note.
-   Se la ricerca web non trova il nome utente, prova i nomi più probabili (nome dell'attività
-   senza spazi, con punti o trattini bassi, con la città) e accetta un account solo se nome,
-   bio o sito corrispondono all'attività.
+   Se la ricerca web non trova il nome utente, cercalo con l'attore Apify
+   `apify/instagram-search-scraper` (`searchType` "user", nome dell'attività e città) oppure prova
+   i nomi più probabili (senza spazi, con punti o trattini bassi, con la città). Accetta un
+   account solo se nome, bio o sito corrispondono all'attività.
+   Se l'account dell'attività non è professionale, leggi i post pubblici con Apify
+   (`apify/instagram-scraper`, `resultsType` "posts") e scrivi nelle note i numeri che servono
+   (post negli ultimi 90 giorni, ultimo post); `instagram_attivo` resta riservato agli account
+   letti con l'API ufficiale, come vuole il codice.
+   Per giudicare se foto e video sono curati, guarda le immagini dei post (`file` e `copertina`
+   dell'API ufficiale) o usa la skill `guarda-reel` su un Reel recente.
 4. **Segnali** (solo quelli veri):
 
    | Segnale | Quando |
