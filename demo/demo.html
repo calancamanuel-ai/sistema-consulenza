@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo automazioni</title>
+<script>
+// Configurazione dell'attività: è l'unica parte da cambiare per ogni copia della demo.
+// Nessun nome di persona: solo dati dell'attività. settore: "bellezza" oppure "officina".
+const CONFIG = {
+  attivita: "Salone Esempio",
+  settore: "bellezza",
+  citta: "San Giovanni in Persiceto",
+  colore: "#7a4b8c",
+  giorni_chiusi: [0, 1],          // 0 = domenica, 1 = lunedì...
+  apertura: "09:00",
+  chiusura: "19:00",
+  servizi: [
+    { nome: "Taglio e piega", durata: 45, prezzo: "da 30 €" },
+    { nome: "Colore", durata: 90, prezzo: "da 45 €" },
+    { nome: "Piega", durata: 30, prezzo: "da 18 €" },
+  ],
+  automazioni: [
+    "Prenotazione online sul sito, anche di sera",
+    "Promemoria su WhatsApp il giorno prima, con conferma in un tocco",
+    "Richiamo dei clienti che non tornano da tempo",
+  ],
+  tempo_risparmiato: "circa 3 ore a settimana di telefonate e messaggi",
+  scheda_prima: { foto: 3, orari: false, link: false, risposte: "0 delle ultime 10" },
+};
+</script>
+<style>
+  :root {
+    --colore: #7a4b8c; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8;
+    --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         color: var(--testo); background: var(--sfondo); }
+  .avviso { background: #2b2830; color: #fff; text-align: center; font-size: 13px; padding: 8px 16px; }
+  header { background: var(--colore); color: #fff; padding: 40px 16px 32px; text-align: center; }
+  header h1 { margin: 0 0 4px; font-size: 28px; line-height: 1.2; }
+  header p { margin: 0; opacity: .85; }
+  main { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
+  section { background: var(--carta); border: 1px solid var(--bordo); border-radius: 16px;
+            padding: 20px 16px; margin-top: 20px; }
+  h2 { margin: 0 0 4px; font-size: 20px; }
+  .sotto { margin: 0 0 16px; color: var(--tenue); font-size: 14px; }
+  .scelte { display: grid; gap: 8px; }
+  .scelta { display: flex; justify-content: space-between; gap: 12px; width: 100%; text-align: left;
+            padding: 12px 14px; border: 1px solid var(--bordo); border-radius: 12px; background: #fff;
+            font: inherit; cursor: pointer; }
+  .scelta small { color: var(--tenue); }
+  .scelta[aria-pressed="true"] { border-color: var(--colore); box-shadow: 0 0 0 2px var(--colore) inset; }
+  .giorni { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .giorno { flex: 0 0 auto; width: 64px; padding: 8px 4px; text-align: center; border: 1px solid var(--bordo);
+            border-radius: 12px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+  .giorno b { display: block; font-size: 18px; }
+  .giorno[aria-pressed="true"], .ora[aria-pressed="true"] { background: var(--colore); color: #fff; border-color: var(--colore); }
+  .ore { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 12px; }
+  .ora { padding: 8px 0; border: 1px solid var(--bordo); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; }
+  .ora:disabled { color: #b9b4c2; text-decoration: line-through; cursor: default; }
+  .passo { margin: 16px 0 8px; font-weight: 600; font-size: 14px; }
+  .bottone { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 12px;
+             background: var(--colore); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  .bottone:disabled { opacity: .4; cursor: default; }
+  .bottone.chiaro { background: #fff; color: var(--colore); border: 1px solid var(--colore); }
+  .conferma { margin-top: 16px; padding: 14px; border-radius: 12px; background: #eaf6ef; color: var(--ok); }
+  .chat { background: var(--wa-sfondo); border-radius: 12px; padding: 12px; min-height: 120px;
+          display: flex; flex-direction: column; gap: 8px; }
+  .chat-testa { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--tenue); }
+  .msg { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; background: #fff;
+         box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; animation: entra .25s ease-out; }
+  .msg.cliente { align-self: flex-end; background: var(--wa); }
+  .msg time { display: block; text-align: right; font-size: 11px; color: var(--tenue); }
+  @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .msg { animation: none; } }
+  .schede { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .schede { grid-template-columns: 1fr; } }
+  .scheda { border: 1px solid var(--bordo); border-radius: 12px; padding: 12px; font-size: 14px; }
+  .scheda h3 { margin: 0 0 8px; font-size: 15px; }
+  .riga { display: flex; gap: 8px; padding: 4px 0; }
+  .no { color: #b3261e; } .si { color: var(--ok); }
+  ul.lista { margin: 0; padding-left: 20px; } ul.lista li { margin: 6px 0; }
+  .tempo { margin-top: 12px; font-weight: 600; }
+  footer { text-align: center; color: var(--tenue); font-size: 13px; padding: 24px 16px; }
+</style>
+</head>
+<body>
+<div class="avviso" id="avviso"></div>
+<header>
+  <h1 id="titolo"></h1>
+  <p id="sottotitolo"></p>
+</header>
+<main>
+  <section aria-labelledby="t-prenota">
+    <h2 id="t-prenota">1. Prenotazione online</h2>
+    <p class="sotto" id="s-prenota"></p>
+    <div class="passo">Servizio</div>
+    <div class="scelte" id="servizi"></div>
+    <div class="passo">Giorno</div>
+    <div class="giorni" id="giorni"></div>
+    <div class="passo">Orario</div>
+    <div class="ore" id="ore"></div>
+    <button class="bottone" id="prenota" disabled>Conferma la prenotazione</button>
+    <div class="conferma" id="conferma" hidden></div>
+  </section>
+
+  <section aria-labelledby="t-wa">
+    <h2 id="t-wa">2. Messaggi automatici su WhatsApp</h2>
+    <p class="sotto">Partono da soli al momento giusto: nessuno deve ricordarsi di scriverli.</p>
+    <div class="chat" id="chat" aria-live="polite">
+      <div class="chat-testa" id="chat-testa"></div>
+    </div>
+    <button class="bottone chiaro" id="avanti">Mostra il messaggio successivo</button>
+  </section>
+
+  <section aria-labelledby="t-scheda">
+    <h2 id="t-scheda">3. La scheda su Google Maps</h2>
+    <p class="sotto">È la prima cosa che vede chi cerca l'attività in zona.</p>
+    <div class="schede">
+      <div class="scheda"><h3>Oggi</h3><div id="prima"></div></div>
+      <div class="scheda"><h3>Dopo</h3><div id="dopo"></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-cambia">
+    <h2 id="t-cambia">Cosa cambia</h2>
+    <ul class="lista" id="automazioni"></ul>
+    <p class="tempo" id="tempo"></p>
+  </section>
+</main>
+<footer id="piede"></footer>
+
+<script>
+const C = CONFIG;
+const OFFICINA = C.settore === "officina";
+const $ = (id) => document.getElementById(id);
+const GIORNI = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
+              "settembre", "ottobre", "novembre", "dicembre"];
+document.documentElement.style.setProperty("--colore", C.colore);
+document.title = "Demo per " + C.attivita;
+
+$("avviso").textContent = "Esempio preparato per " + C.attivita + ", non è il loro sito: nessun dato viene inviato.";
+$("titolo").textContent = C.attivita;
+$("sottotitolo").textContent = (OFFICINA ? "Officina a " : "") + C.citta;
+$("s-prenota").textContent = OFFICINA
+  ? "Il cliente sceglie il lavoro e l'orario di consegna dell'auto, a qualsiasi ora: niente telefonate in officina."
+  : "Il cliente sceglie servizio, giorno e ora da solo, anche la sera: niente telefonate durante il lavoro.";
+$("piede").textContent = "Demo dimostrativa: i messaggi e la prenotazione sono simulati.";
+
+// --- Prenotazione ---
+const scelta = { servizio: null, giorno: null, ora: null };
+
+function minuti(hhmm) { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; }
+function hhmm(min) { return String(Math.floor(min / 60)).padStart(2, "0") + ":" + String(min % 60).padStart(2, "0"); }
+function occupato(data, min) { return (data.getDate() * 7 + min / 30) % 5 === 0; } // finto ma stabile
+
+function premi(contenitore, bottone) {
+  contenitore.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === bottone)));
+}
+
+C.servizi.forEach((s) => {
+  const b = document.createElement("button");
+  b.className = "scelta"; b.type = "button"; b.setAttribute("aria-pressed", "false");
+  b.innerHTML = "<span></span><small></small>";
+  b.firstChild.textContent = s.nome;
+  b.lastChild.textContent = [s.durata ? s.durata + " min" : "", s.prezzo].filter(Boolean).join(" · ");
+  b.onclick = () => { scelta.servizio = s; premi($("servizi"), b); aggiorna(); };
+  $("servizi").append(b);
+});
+
+const giorni = [];
+for (let d = new Date(), i = 0; giorni.length < 7 && i < 21; i++) {
+  const g = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1 + i);
+  if (!C.giorni_chiusi.includes(g.getDay())) giorni.push(g);
+}
+giorni.forEach((g) => {
+  const b = document.createElement("button");
+  b.className = "giorno"; b.type = "button"; b.setAttribute("aria-pressed", "false");
+  b.innerHTML = GIORNI[g.getDay()] + "<b>" + g.getDate() + "</b>";
+  b.onclick = () => { scelta.giorno = g; scelta.ora = null; premi($("giorni"), b); mostraOre(); aggiorna(); };
+  $("giorni").append(b);
+});
+
+function mostraOre() {
+  $("ore").innerHTML = "";
+  for (let m = minuti(C.apertura); m < minuti(C.chiusura); m += 30) {
+    const b = document.createElement("button");
+    b.className = "ora"; b.type = "button"; b.textContent = hhmm(m);
+    b.setAttribute("aria-pressed", "false");
+    b.disabled = occupato(scelta.giorno, m);
+    b.onclick = () => { scelta.ora = hhmm(m); premi($("ore"), b); aggiorna(); };
+    $("ore").append(b);
+  }
+}
+
+function aggiorna() { $("prenota").disabled = !(scelta.servizio && scelta.giorno && scelta.ora); }
+
+function quando() {
+  return GIORNI[scelta.giorno.getDay()] + " " + scelta.giorno.getDate() + " " + MESI[scelta.giorno.getMonth()] + " alle " + scelta.ora;
+}
+
+$("prenota").onclick = () => {
+  $("conferma").hidden = false;
+  $("conferma").textContent = "Prenotazione registrata: " + scelta.servizio.nome + ", " + quando() +
+    ". Il giorno prima arriva il promemoria su WhatsApp (qui sotto).";
+  messaggi = costruisciMessaggi(); indice = 0; svuotaChat(); mostraMessaggio();
+};
+
+// --- WhatsApp ---
+function costruisciMessaggi() {
+  const servizio = scelta.servizio ? scelta.servizio.nome : C.servizi[0].nome;
+  const ora = scelta.ora || "10:00";
+  if (OFFICINA) return [
+    { da: "attivita", testo: "Buongiorno, le ricordiamo che domani alle " + ora + " l'aspettiamo da " + C.attivita +
+      " per: " + servizio + ".\nRisponda 1 per confermare, 2 per spostare." },
+    { da: "cliente", testo: "1" },
+    { da: "attivita", testo: "Perfetto, a domani!" },
+    { da: "attivita", testo: "La sua auto è pronta: può ritirarla entro le " + C.chiusura + ". Il conto è come da preventivo." },
+    { da: "attivita", testo: "Buongiorno da " + C.attivita + ": tra un mese scade la revisione della sua auto. Vuole che le teniamo un posto? Risponda SÌ e la richiamiamo noi." },
+    { da: "attivita", testo: "Grazie per averci scelto! Se si è trovato bene, ci lascia una recensione su Google? Bastano 30 secondi." },
+  ];
+  return [
+    { da: "attivita", testo: "Ciao! Ti ricordiamo l'appuntamento di domani alle " + ora + " da " + C.attivita +
+      " per: " + servizio + ".\nRispondi 1 per confermare, 2 per spostarlo." },
+    { da: "cliente", testo: "1" },
+    { da: "attivita", testo: "Perfetto, ti aspettiamo! 😊" },
+    { da: "attivita", testo: "Grazie della visita! Se ti sei trovata/o bene, ci lasci una recensione su Google? Bastano 30 secondi." },
+    { da: "attivita", testo: "Ciao! Sono passate 6 settimane dal tuo ultimo " + servizio.toLowerCase() +
+      ". Vuoi prenotare il prossimo? Ci sono posti liberi giovedì e venerdì." },
+  ];
+}
+
+let messaggi = costruisciMessaggi(), indice = 0;
+$("chat-testa").textContent = OFFICINA ? "Chat con il cliente" : "Chat con la cliente";
+
+function svuotaChat() { $("chat").querySelectorAll(".msg").forEach((m) => m.remove()); $("avanti").disabled = false; }
+
+function mostraMessaggio() {
+  const m = messaggi[indice++];
+  const div = document.createElement("div");
+  div.className = "msg" + (m.da === "cliente" ? " cliente" : "");
+  div.textContent = m.testo;
+  const t = document.createElement("time");
+  t.textContent = hhmm(9 * 60 + indice * 7);
+  div.append(t);
+  $("chat").append(div);
+  if (indice >= messaggi.length) { $("avanti").disabled = true; $("avanti").textContent = "Fine della demo dei messaggi"; }
+}
+$("avanti").onclick = mostraMessaggio;
+mostraMessaggio();
+
+// --- Scheda Google ---
+function righe(voci) {
+  return voci.map(([ok, testo]) => '<div class="riga"><span class="' + (ok ? "si" : "no") + '">' +
+    (ok ? "✓" : "✗") + "</span><span>" + testo + "</span></div>").join("");
+}
+const p = C.scheda_prima;
+$("prima").innerHTML = righe([
+  [p.orari, p.orari ? "Orari indicati" : "Orari non indicati"],
+  [p.foto >= 10, p.foto + " foto"],
+  [p.link, p.link ? "Link al sito" : "Nessun link al sito o ai social"],
+  [false, "Risposte alle recensioni: " + p.risposte],
+]);
+$("dopo").innerHTML = righe([
+  [true, "Orari e giorni di chiusura sempre aggiornati"],
+  [true, "Foto recenti dei lavori"],
+  [true, "Link a sito, prenotazione e Instagram"],
+  [true, "Risposte alle recensioni"],
+]);
+
+// --- Cosa cambia ---
+C.automazioni.forEach((a) => { const li = document.createElement("li"); li.textContent = a; $("automazioni").append(li); });
+$("tempo").textContent = "Tempo risparmiato stimato: " + C.tempo_risparmiato + ".";
+</script>
+</body>
+</html>
