@@ -47,11 +47,11 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    letti con l'API ufficiale, come vuole il codice.
    Per giudicare se foto e video sono curati, guarda le immagini dei post (`file` e `copertina`
    dell'API ufficiale) o usa la skill `guarda-reel` su un Reel recente.
-4. **Facebook e pubblicità.** Trova la pagina Facebook dell'attività (sito su Maps, bio Instagram,
-   sito, ricerca web con `apify--web-search`). Poi, per tutte le pagine della zona insieme, con il
-   connettore Apify: `apify/facebook-pages-scraper` (dati della pagina e inserzioni attive) e
-   `apify/facebook-posts-scraper` con `resultsLimit` 1 (data dell'ultimo post), con
-   `callOptions.maxTotalChargeUsd` 1. Solo pagine di attività, mai profili di persone.
+4. **Pubblicità.** Facebook come canale conta poco: serve solo a sapere se l'attività fa
+   pubblicità su Meta (la Libreria inserzioni copre anche Instagram). Trova la pagina Facebook
+   (sito su Maps, bio Instagram, sito, `apify--web-search` con `site:facebook.com`), poi per tutte
+   le pagine della zona insieme `apify/facebook-pages-scraper` con `callOptions.maxTotalChargeUsd`
+   0,5 e leggi `ad_status`. Solo pagine di attività, mai profili di persone.
 5. **Canale di contatto.** Dal numero su Maps, dalla bio Instagram e dal sito: c'è un cellulare o
    WhatsApp, un modulo, una prenotazione online? Se c'è solo il telefono fisso, è `solo_telefono`.
 6. **Scheda Google.** Places non dice se la scheda è stata rivendicata: per tutte le attività della
@@ -75,7 +75,7 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    | `indipendente` | Attività del titolare, senza insegna di catena |
    | `catena` | Franchising, catena o rete con sito e prenotazioni gestiti dalla sede centrale |
    | `prenotazione_moderna` | Prenotazione online completa (Treatwell, Fresha, sistema proprio con agenda), anche senza sito proprio. Le schede Fresha con "Call to book" non sono affiliate e non contano |
-   | `nessuna_presenza` | Nessun sito e nessun social attivo (conta anche una pagina Facebook con post negli ultimi 90 giorni) |
+   | `nessuna_presenza` | Nessun sito e nessun social attivo |
    | `scheda_non_reclamata` | Su Maps la scheda non è stata rivendicata (`claimThisBusiness` true) |
    | `scheda_trascurata` | Scheda rivendicata, ma il titolare non ha risposto a nessuna delle ultime 10 recensioni e non pubblica aggiornamenti |
    | `scheda_incompleta` | Scheda senza orari o con meno di 10 foto (non insieme a `scheda_non_reclamata`) |
