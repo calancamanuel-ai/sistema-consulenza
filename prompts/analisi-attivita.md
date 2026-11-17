@@ -33,7 +33,7 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    nelle note. Le osservazioni si salvano subito con
    `python scripts/attivita.py nota PLACE_ID "testo"`, che si aggiunge alla nota esistente.
    Controllo tecnico: `python scripts/attivita.py sito URL` (PageSpeed, da telefono; dura fino a
-   un minuto). Guarda anche se il sito ha l'informativa privacy e il banner dei cookie: se il
+   un minuto); i numeri vanno nelle note e aiutano il giudizio, ma non sono un segnale. Guarda anche se il sito ha l'informativa privacy e il banner dei cookie: se il
    banner compare solo con JavaScript, usa `apify--web-fetch` con `wait`.
 3. **Instagram.** Trovato il nome utente: `python scripts/attivita.py instagram NOME`.
    Se l'account non è professionale, l'API non lo legge: annotalo nelle note.
@@ -71,7 +71,7 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    | --- | --- |
    | `instagram_attivo` | Account professionale, almeno 3 post negli ultimi 90 giorni, foto o video dei propri lavori fatti con cura |
    | `nessun_sito` | Nessun sito proprio: Maps senza sito, oppure solo Facebook, Instagram, una pagina di directory o di una piattaforma di prenotazione. Conta solo con `instagram_attivo` |
-   | `sito_debole` | Sito vecchio, scomodo dal telefono, oppure senza prenotazione e senza contatto rapido; anche sito che non passa tutto in https o con prestazioni da telefono sotto 50 |
+   | `sito_debole` | Sito vecchio, scomodo dal telefono, oppure senza prenotazione e senza contatto rapido. I dati di PageSpeed (https, velocità) vanno nelle note: da soli non bastano |
    | `indipendente` | Attività del titolare, senza insegna di catena |
    | `catena` | Franchising, catena o rete con sito e prenotazioni gestiti dalla sede centrale |
    | `prenotazione_moderna` | Prenotazione online completa (Treatwell, Fresha, sistema proprio con agenda), anche senza sito proprio. Le schede Fresha con "Call to book" non sono affiliate e non contano |
