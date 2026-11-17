@@ -61,6 +61,12 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    `callOptions.maxTotalChargeUsd` 1. Dai risultati leggi `claimThisBusiness` (true: scheda
    non rivendicata), `ownerUpdates`, `responseFromOwnerText` delle recensioni, `bookingLinks`,
    `openingHours` e `imagesCount`; annota nelle note quello che serve.
+   Controlla anche il collegamento: se l'attività ha un sito che funziona o un social attivo
+   (Instagram con post regolari, o Facebook con post negli ultimi 90 giorni) e la scheda non lo
+   collega (campo sito vuoto, rotto o che porta a una pagina meno usata), aggiungi in scrittura
+   `--servizio "collegamento di sito e social alla scheda Google"`. I profili social che Google
+   mostra a parte nella scheda non si leggono: guarda solo il campo sito. Il servizio aggiunto a
+   mano va ripassato a ogni nuovo `analizza` della stessa attività.
    Leggi anche i testi delle 10 recensioni (le più recenti) per le lamentele: contano soprattutto
    le recenti; se due recensioni dicono il contrario, vale la più recente solo se tra le due c'è
    più di un anno, altrimenti valgono entrambe. Nomi e testi delle recensioni non vanno né nel
