@@ -3,6 +3,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from consulenza.instagram import Post, ProfiloInstagram
+from consulenza.pagespeed import ControlloSito
 from consulenza.places import Attivita
 from consulenza.sheets import COLONNE_ATTIVITA
 
@@ -117,7 +118,20 @@ def test_analizza_aggiorna_e_riordina(capsys):
     assert (primo["punteggio"], primo["segnali"], primo["follower"]) == (4, "instagram_attivo, nessun_sito", 1200)
     assert primo["automazioni"] == "Sito vetrina; Promemoria degli appuntamenti"
     assert primo["note"] == "visto di persona"
+    assert primo["servizi"].startswith("sito vetrina")
+    assert foglio.preparato  # la colonna servizi si crea se manca
     assert "punteggio 4" in capsys.readouterr().out
+
+
+def test_analizza_con_servizi_extra():
+    foglio = FintoFoglio([{"place_id": "p1", "nome": "Salone p1"}])
+
+    esito = script.main(["analizza", "p1", "--segnali", "solo_telefono", "--motivazione", "m", "--automazione", "a",
+                         "--servizio", "buoni regalo online"], foglio=foglio, oggi=OGGI)
+
+    assert esito == 0
+    servizi = foglio.righe[0]["servizi"].split("; ")
+    assert servizi[-1] == "buoni regalo online" and len(servizi) == 2
 
 
 def test_analizza_errore_non_scrive(capsys):
@@ -179,3 +193,35 @@ def test_nota_si_aggiunge_a_quella_esistente(capsys):
 
 def test_nota_attivita_sconosciuta(capsys):
     assert script.main(["nota", "p9", "x"], foglio=FintoFoglio()) == 1
+
+
+class FintoPageSpeed:
+    def __init__(self, controllo):
+        self.controllo = controllo
+        self.siti = []
+
+    def controlla(self, sito):
+        self.siti.append(sito)
+        return self.controllo
+
+
+def test_sito_stampa_il_controllo_senza_toccare_il_foglio(capsys):
+    controllo = ControlloSito("https://www.salone.example/", True, 42, 83, 74, True, True, False, 2)
+    client = FintoPageSpeed(controllo)
+
+    esito = script.main(["sito", "salone.example"], client_pagespeed=client)
+
+    assert esito == 0
+    assert client.siti == ["salone.example"]
+    uscita = capsys.readouterr().out
+    assert "prestazioni da telefono 42" in uscita
+    assert "tutto in https: sì" in uscita
+    assert "descrizione: no" in uscita
+    assert "cookie di terze parti: 2" in uscita
+
+
+def test_sito_con_dati_sconosciuti(capsys):
+    controllo = ControlloSito(None, None, None, None, None, None, None, None, None)
+
+    assert script.main(["sito", "x.example"], client_pagespeed=FintoPageSpeed(controllo)) == 0
+    assert "tutto in https: ?" in capsys.readouterr().out

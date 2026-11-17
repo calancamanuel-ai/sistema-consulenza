@@ -21,4 +21,7 @@
 - Google Maps: ricerca e dati di base con l'API Places; Apify (Google Maps Scraper) solo per i dati
   pubblici della scheda che Places non dà (scheda rivendicata, risposte del titolare alle recensioni,
   aggiornamenti, link di prenotazione). Mai nomi o dati degli autori delle recensioni.
+- Facebook: Apify solo per le pagine delle attività (dati della pagina, data e numeri dei post) e per
+  la Libreria inserzioni di Meta; mai profili personali.
+- Controllo tecnico dei siti con l'API ufficiale PageSpeed Insights (chiave `PLACES_API_KEY`).
 - Testi, nomi e commenti in italiano.

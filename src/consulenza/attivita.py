@@ -64,8 +64,14 @@ def analizza(
     soglia_recensioni: int,
     oggi: date,
     profilo: ProfiloInstagram | None = None,
+    servizi: Mapping[str, str] | None = None,
+    extra: Iterable[str] = (),
 ) -> dict:
-    """Riga aggiornata con segnali, punteggio, motivazione e automazioni; le altre colonne restano."""
+    """Riga aggiornata con segnali, punteggio, motivazione, automazioni e servizi; le altre colonne restano.
+
+    I servizi vengono dai segnali che hanno contato (`servizi`: segnale -> servizio), più quelli
+    `extra` scritti a mano, senza doppioni.
+    """
     if not motivazione.strip():
         raise ValueError("Manca la motivazione")
     automazioni = [a.strip() for a in automazioni]
@@ -83,11 +89,13 @@ def analizza(
     if int(nuova.get("recensioni") or 0) >= soglia_recensioni:
         segnali.add("molte_recensioni")
     punteggio = calcola(segnali, punti)
+    proposti = [(servizi or {}).get(s) for s in punteggio.segnali] + [e.strip() for e in extra]
     nuova.update(
         segnali=", ".join(punteggio.segnali),
         punteggio=punteggio.totale,
         motivazione=motivazione.strip(),
         automazioni="; ".join(automazioni),
+        servizi="; ".join(dict.fromkeys(p for p in proposti if p)),
         data_analisi=oggi.isoformat(),
     )
     return nuova

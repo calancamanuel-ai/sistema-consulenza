@@ -19,7 +19,7 @@ I cinque segreti che servono alla fine:
 | --- | --- | --- |
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Tutto il file JSON della chiave dell'account di servizio | Passo 2 |
 | `SHEET_ID` | Link del foglio (o solo il suo ID) | Passo 2 |
-| `PLACES_API_KEY` | Chiave API limitata a Places API (New) | Passo 3 |
+| `PLACES_API_KEY` | Chiave API limitata a Places API (New) e PageSpeed Insights API | Passo 3 |
 | `IG_ACCESS_TOKEN` | Token Meta di lunga durata (circa 60 giorni) | Passo 4 |
 | `IG_USER_ID` | ID numerico dell'account Instagram professionale (inizia di solito con 1784) | Passo 4 |
 
@@ -76,7 +76,8 @@ Se non sei amministratore dell'organizzazione, o al punto 2 non puoi sostituire 
 2. Apri la chiave (Modifica):
    - nome: `places-consulenza`;
    - **Restrizioni delle applicazioni**: Nessuna. Le sessioni cloud non hanno un indirizzo IP fisso, quindi una restrizione per IP bloccherebbe le chiamate;
-   - **Restrizioni API**: Limita chiave → scegli solo **Places API (New)**;
+   - **Restrizioni API**: Limita chiave → scegli **Places API (New)** e **PageSpeed Insights API**
+     (la seconda va prima attivata in Menu → API e servizi → Libreria; serve al controllo tecnico dei siti);
    - **Salva**.
 3. Copia la chiave: è il valore di `PLACES_API_KEY`.
 

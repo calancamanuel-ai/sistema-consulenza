@@ -33,3 +33,19 @@ opportunita:
     nessuna_presenza: -1       # nessuna presenza online e nessuna attività sui social
     scheda_non_reclamata: 2    # scheda Google mai rivendicata dal titolare
     scheda_trascurata: 1       # scheda rivendicata ma senza risposte alle recensioni né aggiornamenti
+    scheda_incompleta: 1       # scheda senza orari o con meno di 10 foto
+    lamentele_recensioni: 1    # almeno 2 delle ultime 10 recensioni lamentano attese, telefono, prenotazione
+    sito_senza_privacy: 1      # sito senza informativa privacy o banner dei cookie
+    pubblicita_attiva: 1       # inserzioni attive su Meta: c'è budget per il marketing
+    solo_telefono: 1           # solo telefono fisso: niente WhatsApp, modulo o prenotazione online
+  # Servizio da proporre quando il segnale conta; finisce nella colonna servizi del foglio.
+  servizi:
+    nessun_sito: sito vetrina con prenotazione online
+    sito_debole: rifacimento del sito
+    sito_senza_privacy: messa a norma privacy e cookie del sito
+    scheda_non_reclamata: rivendicazione e configurazione della scheda Google
+    scheda_trascurata: gestione della scheda Google e risposte alle recensioni
+    scheda_incompleta: completamento della scheda Google (orari, foto)
+    lamentele_recensioni: prenotazione online e promemoria automatici
+    pubblicita_attiva: landing page e gestione delle campagne
+    solo_telefono: WhatsApp Business con risposte e promemoria automatici

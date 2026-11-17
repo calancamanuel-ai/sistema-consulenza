@@ -6,8 +6,10 @@ Comandi:
   instagram NOME_UTENTE
       Mostra i numeri di un account professionale (Business Discovery), senza scrivere niente.
   analizza PLACE_ID --motivazione TESTO --automazione TESTO [--automazione ...]
-           [--segnali s1,s2] [--instagram NOME_UTENTE] [--note TESTO]
-      Calcola il punteggio, aggiorna la riga e riordina il foglio.
+           [--segnali s1,s2] [--instagram NOME_UTENTE] [--servizio TESTO ...] [--note TESTO]
+      Calcola il punteggio e i servizi proponibili, aggiorna la riga e riordina il foglio.
+  sito URL
+      Controllo tecnico del sito con PageSpeed (da telefono), senza scrivere niente.
   nota PLACE_ID TESTO
       Aggiunge un'osservazione alla colonna note, senza toccare il resto.
   elenco [--settore SETTORE]
@@ -22,10 +24,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from consulenza import attivita, instagram, places, sheets  # noqa: E402
+from consulenza import attivita, instagram, pagespeed, places, sheets  # noqa: E402
 from consulenza.api import ErroreApi  # noqa: E402
 from consulenza.config import carica_zone  # noqa: E402
-from consulenza.opportunita import carica_punti  # noqa: E402
+from consulenza.opportunita import carica_punti, carica_servizi  # noqa: E402
 
 SCHEDA = "Attività"
 TOKEN_NON_VALIDO = 190  # codice Meta: token scaduto o non valido
@@ -47,7 +49,10 @@ def _argomenti(argv):
     analisi.add_argument("--motivazione", required=True)
     analisi.add_argument("--automazione", action="append", default=[])
     analisi.add_argument("--instagram")
+    analisi.add_argument("--servizio", action="append", default=[], help="servizio in più, oltre a quelli dei segnali")
     analisi.add_argument("--note")
+    sito = comandi.add_parser("sito")
+    sito.add_argument("url")
     nota = comandi.add_parser("nota")
     nota.add_argument("place_id")
     nota.add_argument("testo")
@@ -88,7 +93,23 @@ def _instagram(arg, client, oggi) -> int:
     return 0
 
 
+def _si_no(valore) -> str:
+    return "?" if valore is None else ("sì" if valore else "no")
+
+
+def _sito(arg, client) -> int:
+    c = client.controlla(arg.url)
+    voti = ", ".join(f"{nome} {'?' if v is None else v}" for nome, v in
+                     (("prestazioni da telefono", c.prestazioni), ("SEO", c.seo), ("buone pratiche", c.buone_pratiche)))
+    print(f"{c.url_finale or arg.url}: {voti} (su 100)")
+    print(f"  tutto in https: {_si_no(c.tutto_https)} | adatto al telefono: {_si_no(c.adatto_al_telefono)} "
+          f"| titolo: {_si_no(c.titolo)} | descrizione: {_si_no(c.descrizione)} "
+          f"| cookie di terze parti: {'?' if c.cookie_terze_parti is None else c.cookie_terze_parti}")
+    return 0
+
+
 def _analizza(arg, foglio, client, oggi) -> int:
+    foglio.prepara()  # crea le colonne nuove (per esempio servizi) se il foglio non le ha ancora
     righe = foglio.leggi(SCHEDA)
     indice = next((i for i, r in enumerate(righe) if r["place_id"] == arg.place_id), None)
     if indice is None:
@@ -103,7 +124,8 @@ def _analizza(arg, foglio, client, oggi) -> int:
     segnali = [s.strip() for s in arg.segnali.split(",") if s.strip()]
     try:
         nuova = attivita.analizza(righe[indice], segnali, arg.motivazione, arg.automazione, carica_punti(),
-                                  attivita.carica_soglia_recensioni(), oggi, profilo)
+                                  attivita.carica_soglia_recensioni(), oggi, profilo,
+                                  servizi=carica_servizi(), extra=arg.servizio)
     except ValueError as errore:
         print(f"ERRORE: {errore}")
         return 1
@@ -147,11 +169,13 @@ def main(argv=None, **dipendenze) -> int:
         return 1
 
 
-def _esegui(arg, foglio=None, client_places=None, client_instagram=None, oggi=None) -> int:
+def _esegui(arg, foglio=None, client_places=None, client_instagram=None, client_pagespeed=None, oggi=None) -> int:
     # Foglio e client si creano solo se servono: i test li passano già pronti.
     oggi = oggi or date.today()
     if arg.comando == "instagram":
         return _instagram(arg, client_instagram or instagram.da_ambiente(), oggi)
+    if arg.comando == "sito":
+        return _sito(arg, client_pagespeed or pagespeed.da_ambiente())
     foglio = foglio or sheets.da_ambiente()
     if arg.comando == "cerca":
         return _cerca(arg, foglio, client_places or places.da_ambiente())

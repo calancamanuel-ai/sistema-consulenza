@@ -34,6 +34,7 @@ COLONNE_ATTIVITA = [
     "punteggio",
     "motivazione",  # una frase
     "automazioni",  # 1-3 automazioni proposte
+    "servizi",  # tutti i servizi proponibili, dai segnali e a mano
     "data_analisi",
     "note",
 ]

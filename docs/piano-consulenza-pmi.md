@@ -85,6 +85,11 @@ Ogni segnale aggiunge o toglie punti; il totale ordina le attività da contattar
 | Nessuna presenza online e nessuna attività sui social | Maps, Instagram | −1 |
 | Scheda Google mai rivendicata dal titolare | Maps (Apify) | +2 |
 | Scheda rivendicata ma trascurata: nessuna risposta alle ultime recensioni, nessun aggiornamento | Maps (Apify) | +1 |
+| Scheda senza orari o con meno di 10 foto | Maps (Apify) | +1 |
+| Almeno 2 delle ultime 10 recensioni lamentano attese, telefono, prenotazione | Maps (Apify) | +1 |
+| Sito senza informativa privacy o banner dei cookie | Sito | +1 |
+| Inserzioni attive su Meta | Libreria inserzioni (Apify) | +1 |
+| Solo telefono fisso: niente WhatsApp, modulo o prenotazione online | Maps, Instagram, sito | +1 |
 
 Logica: i segnali sono strutturali, non basati sul tono delle recensioni. Instagram attivo dice che l'attività investe nella promozione; la mancanza del sito, solo se Instagram è attivo, dice che c'è un bisogno chiaro. Insieme fanno +4, il punteggio più alto: è il caso tipico di chi pensa che il sito sia costoso o impegnativo (per esempio un'officina con un Instagram curato e senza sito).
 

@@ -4,10 +4,11 @@ import pytest
 
 from consulenza.attivita import analizza, carica_soglia_recensioni, nuove_righe, ordina, riassunto_instagram
 from consulenza.instagram import Post, ProfiloInstagram
-from consulenza.opportunita import carica_punti
+from consulenza.opportunita import carica_punti, carica_servizi
 from consulenza.places import Attivita
 
 PUNTI = carica_punti()
+SERVIZI = {"nessun_sito": "sito vetrina", "solo_telefono": "WhatsApp Business", "sito_debole": "sito nuovo"}
 OGGI = date(2026, 11, 16)
 
 
@@ -27,7 +28,7 @@ PROFILO = ProfiloInstagram("salone_esempio", "Salone Esempio", "bio", None, 1500
 def riga(**campi):
     base = {"place_id": "p1", "nome": "Salone Esempio", "recensioni": 40, "sito": "", "instagram": "",
             "follower": "", "ultimo_post": "", "segnali": "", "punteggio": "", "motivazione": "",
-            "automazioni": "", "data_analisi": "", "note": "a mano"}
+            "automazioni": "", "servizi": "", "data_analisi": "", "note": "a mano"}
     return base | campi
 
 
@@ -73,6 +74,25 @@ def test_analizza_con_instagram_attivo_e_senza_sito():
         motivazione="Instagram curato, niente sito.",
         automazioni="Sito vetrina con prenotazione; Promemoria WhatsApp", data_analisi="2026-11-16",
     )
+
+
+def test_servizi_dai_segnali_che_contano_piu_quelli_extra():
+    risultato = analizza(riga(), ["nessun_sito", "solo_telefono", "indipendente"], "m", ["a"], PUNTI, 100, OGGI,
+                         servizi=SERVIZI, extra=["buoni regalo online", "WhatsApp Business", " "])
+
+    # nessun_sito non conta senza instagram_attivo, quindi niente sito vetrina; niente doppioni.
+    assert risultato["servizi"] == "WhatsApp Business; buoni regalo online"
+
+
+def test_servizi_vuoti_senza_segnali_che_li_danno():
+    assert analizza(riga(), ["indipendente"], "m", ["a"], PUNTI, 100, OGGI, servizi=SERVIZI)["servizi"] == ""
+
+
+def test_ogni_segnale_dei_servizi_ha_un_servizio():
+    servizi = carica_servizi()
+    for segnale in ("scheda_incompleta", "lamentele_recensioni", "sito_senza_privacy", "pubblicita_attiva",
+                    "solo_telefono", "scheda_non_reclamata", "scheda_trascurata", "nessun_sito", "sito_debole"):
+        assert segnale in servizi
 
 
 def test_molte_recensioni_viene_dai_dati_di_maps():

@@ -1,0 +1,20 @@
+{
+  "id": "https://www.salone-esempio.example/",
+  "lighthouseResult": {
+    "requestedUrl": "http://salone-esempio.example/",
+    "finalDisplayedUrl": "https://www.salone-esempio.example/",
+    "categories": {
+      "performance": {"id": "performance", "score": 0.42},
+      "seo": {"id": "seo", "score": 0.83},
+      "best-practices": {"id": "best-practices", "score": 0.74}
+    },
+    "audits": {
+      "is-on-https": {"id": "is-on-https", "score": 1},
+      "viewport-insight": {"id": "viewport-insight", "score": 1},
+      "document-title": {"id": "document-title", "score": 1},
+      "meta-description": {"id": "meta-description", "score": 0},
+      "third-party-cookies": {"id": "third-party-cookies", "score": 0,
+                              "details": {"type": "table", "items": [{"name": "_fbp"}, {"name": "IDE"}]}}
+    }
+  }
+}

@@ -60,6 +60,11 @@ def test_punti_dei_segnali_come_nel_piano():
         "nessuna_presenza": -1,
         "scheda_non_reclamata": 2,
         "scheda_trascurata": 1,
+        "scheda_incompleta": 1,
+        "lamentele_recensioni": 1,
+        "sito_senza_privacy": 1,
+        "pubblicita_attiva": 1,
+        "solo_telefono": 1,
     }
 
 

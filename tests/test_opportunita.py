@@ -1,6 +1,6 @@
 import pytest
 
-from consulenza.opportunita import SEGNALI, Punteggio, calcola, carica_punti
+from consulenza.opportunita import SEGNALI, Punteggio, calcola, carica_punti, carica_servizi
 
 PUNTI = carica_punti()
 
@@ -24,6 +24,27 @@ def test_scheda_google_non_reclamata():
 
 def test_scheda_google_trascurata():
     assert calcola({"scheda_trascurata"}, PUNTI).totale == 1
+
+
+@pytest.mark.parametrize("segnale", ["scheda_incompleta", "lamentele_recensioni", "sito_senza_privacy",
+                                     "pubblicita_attiva", "solo_telefono"])
+def test_segnali_dei_servizi_valgono_un_punto(segnale):
+    assert calcola({segnale}, PUNTI).totale == 1
+
+
+def test_servizi_dal_file_di_configurazione():
+    servizi = carica_servizi()
+    assert set(servizi) <= set(SEGNALI)
+    assert servizi["sito_senza_privacy"] == "messa a norma privacy e cookie del sito"
+    assert all(isinstance(v, str) and v for v in servizi.values())
+
+
+def test_servizi_con_segnale_sconosciuto(tmp_path):
+    percorso = tmp_path / "punteggio.yaml"
+    percorso.write_text("opportunita:\n  servizi:\n    sito_lento: velocizzare il sito\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="sito_lento"):
+        carica_servizi(percorso)
 
 
 def test_nessun_sito_senza_instagram_attivo_non_conta():
@@ -82,6 +103,10 @@ def test_segnale_sconosciuto():
         {"nessuna_presenza", "instagram_attivo"},
         {"nessuna_presenza", "sito_debole"},
         {"scheda_non_reclamata", "scheda_trascurata"},
+        {"scheda_non_reclamata", "scheda_incompleta"},
+        {"nessun_sito", "sito_senza_privacy"},
+        {"nessuna_presenza", "pubblicita_attiva"},
+        {"solo_telefono", "prenotazione_moderna"},
     ],
 )
 def test_segnali_incompatibili(segnali):

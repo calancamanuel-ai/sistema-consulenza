@@ -21,6 +21,11 @@ SEGNALI = (
     "nessuna_presenza",
     "scheda_non_reclamata",
     "scheda_trascurata",
+    "scheda_incompleta",
+    "lamentele_recensioni",
+    "sito_senza_privacy",
+    "pubblicita_attiva",
+    "solo_telefono",
 )
 
 # Coppie che non possono essere vere insieme: indicano un errore nell'analisi.
@@ -31,6 +36,10 @@ INCOMPATIBILI = (
     ("nessuna_presenza", "sito_debole"),
     ("nessuna_presenza", "prenotazione_moderna"),
     ("scheda_non_reclamata", "scheda_trascurata"),
+    ("scheda_non_reclamata", "scheda_incompleta"),
+    ("nessun_sito", "sito_senza_privacy"),
+    ("nessuna_presenza", "pubblicita_attiva"),
+    ("solo_telefono", "prenotazione_moderna"),
 )
 
 
@@ -47,6 +56,15 @@ def carica_punti(percorso: Path = CARTELLA / "punteggio.yaml") -> dict[str, int]
     if mancanti or extra:
         raise ValueError(f"Segnali in {percorso}: mancano {mancanti}, sconosciuti {extra}")
     return {s: int(punti[s]) for s in SEGNALI}
+
+
+def carica_servizi(percorso: Path = CARTELLA / "punteggio.yaml") -> dict[str, str]:
+    """Servizio da proporre per ogni segnale che ne indica uno."""
+    servizi = carica_punteggio(percorso)["opportunita"].get("servizi") or {}
+    sconosciuti = [s for s in servizi if s not in SEGNALI]
+    if sconosciuti:
+        raise ValueError(f"Servizi in {percorso} per segnali sconosciuti: {sconosciuti}")
+    return {s: str(v) for s, v in servizi.items()}
 
 
 def calcola(segnali: Iterable[str], punti: Mapping[str, int]) -> Punteggio:
