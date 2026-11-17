@@ -33,8 +33,9 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    nelle note. Le osservazioni si salvano subito con
    `python scripts/attivita.py nota PLACE_ID "testo"`, che si aggiunge alla nota esistente.
    Controllo tecnico: `python scripts/attivita.py sito URL` (PageSpeed, da telefono; dura fino a
-   un minuto); i numeri vanno nelle note e aiutano il giudizio, ma non sono un segnale. Guarda anche se il sito ha l'informativa privacy e il banner dei cookie: se il
-   banner compare solo con JavaScript, usa `apify--web-fetch` con `wait`.
+   un minuto); i numeri vanno nelle note e aiutano il giudizio, ma non sono un segnale. Guarda anche se il sito ha l'informativa privacy e il banner dei cookie: leggi il
+   testo della pagina (`apify--web-fetch` con `formats` ["text"] e `wait`), non solo i link, perché
+   spesso il banner è solo testo.
 3. **Instagram.** Trovato il nome utente: `python scripts/attivita.py instagram NOME`.
    Se l'account non è professionale, l'API non lo legge: annotalo nelle note.
    Se la ricerca web non trova il nome utente, cercalo con l'attore Apify
