@@ -23,11 +23,21 @@ python .claude/skills/guarda-reel/scripts/guarda_reel.py prepara SORGENTE [--mod
 ```
 
 - `SORGENTE`: link Instagram (`/reel/`, `/p/`, `/tv/`), link diretto al video o file video.
-- Con un link Instagram il video si scarica con Apify (attore `apify/instagram-scraper`): serve la
-  variabile d'ambiente `APIFY_TOKEN`. Non stampare mai il token e non metterlo in URL o file.
+- Con un link Instagram il post si legge con l'attore Apify `apify/instagram-scraper`. In ordine di preferenza:
+  1. **Connettore Apify** (strumenti `mcp__apify__*`, per esempio dal plugin
+     `apify/apify-claude-code-plugin`): chiama `call-actor` con attore `apify/instagram-scraper`,
+     input `{"directUrls": ["LINK"], "resultsType": "posts", "resultsLimit": 1}`, `waitSecs` 45 e
+     `callOptions.maxTotalChargeUsd` 0.5; poi `get-dataset-items` sul `datasetId` restituito.
+     Salva il primo elemento, così com'è, in un file JSON fuori da `analisi/` (per esempio
+     nella cartella temporanea) e lancia `prepara LINK --post FILE`. Copia `videoUrl` senza
+     cambiare un carattere e lancia subito lo script: il link scade.
+  2. **Chiave API**: senza connettore, lo script chiama Apify da solo se c'è la variabile
+     d'ambiente `APIFY_TOKEN`. Non stampare mai il token e non metterlo in URL o file.
 - Se hai già il link diretto al video (per esempio `media_url` dell'API di Meta), passalo con
   `--video-url URL` insieme al link Instagram, oppure con `--codice CODICE`: Apify si salta.
   L'API di Meta spesso non dà `media_url` per i reel con musica protetta: allora serve Apify.
+- Se Apify risponde con `error` (per esempio "Profile does not exist" o post privato), riferiscilo
+  così com'è: non provare altre strade per aggirare la privacy dell'account.
 - `--modalita rapida` (predefinita): 6 fotogrammi a 512 px (0, 1, 2, 3 s, metà, fine).
   `--modalita completa`: fitti nei primi 3 secondi, poi uno ogni 2 secondi, al massimo 20, a 768 px.
   Usa la completa quando l'utente chiede un'analisi dettagliata o quando la rapida non basta.
@@ -39,7 +49,7 @@ Il risultato è `analisi/CODICE/` con:
 - `griglia.jpg`, tutti i fotogrammi piccoli in un'immagine;
 - `trascrizione.txt`, con i secondi di ogni frase, oppure "Nessun parlato rilevato." o "Nessuna traccia audio nel video.";
 - `meta.json`, con durata, risoluzione, fps, lingua, elenco dei fotogrammi e, se il video viene da Apify, i dati
-  del post (account, data, didascalia, like, commenti, visualizzazioni).
+  del post (account, data, didascalia, like, commenti, visualizzazioni, riproduzioni).
 
 Se lo script si ferma con `ERRORE:`, riferisci il messaggio e non inventare il contenuto del video.
 

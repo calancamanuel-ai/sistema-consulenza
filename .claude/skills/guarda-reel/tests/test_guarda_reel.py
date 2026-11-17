@@ -128,6 +128,23 @@ def test_errori_apify(risposta, errore):
         gr.post_da_apify("https://www.instagram.com/reel/X/", "t", FintoHttp(risposta))
 
 
+@pytest.mark.parametrize("contenuto", [POST_APIFY, [POST_APIFY], {"items": [POST_APIFY]}])
+def test_post_salvato_dal_connettore(tmp_path, contenuto):
+    # Con il connettore Apify il post lo legge Claude e lo salva in un file: niente token.
+    file = tmp_path / "post.json"
+    file.write_text(json.dumps(contenuto), encoding="utf-8")
+    video_url, dati = gr.post_da_file(file)
+    assert video_url == "https://cdn.example.invalid/v.mp4"
+    assert dati["account"] == "studio_esempio"
+
+
+def test_post_salvato_non_video(tmp_path):
+    file = tmp_path / "post.json"
+    file.write_text(json.dumps({"type": "Image"}), encoding="utf-8")
+    with pytest.raises(gr.ErroreSkill, match="non è un video"):
+        gr.post_da_file(file)
+
+
 def test_token_mancante():
     with pytest.raises(gr.ErroreSkill, match="APIFY_TOKEN"):
         gr.token_apify({})

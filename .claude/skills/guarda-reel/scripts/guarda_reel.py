@@ -2,12 +2,13 @@
 
 Uso:
   python guarda_reel.py prepara SORGENTE [--modalita rapida|completa] [--video-url URL]
-                                [--codice CODICE] [--uscita analisi]
+                                [--post FILE] [--codice CODICE] [--uscita analisi]
   python guarda_reel.py verifica analisi/CODICE/analisi.json
 
 SORGENTE può essere un link Instagram (reel, post, tv), un file video o un link diretto al video
 (per esempio media_url dell'API di Meta). Con un link Instagram serve APIFY_TOKEN, a meno che non
-si passi --video-url: in quel caso Apify si salta.
+si passi --video-url (link diretto) o --post (post già letto con il connettore Apify): in quei
+casi lo script non chiama Apify.
 
 Crea USCITA/CODICE/ con video.mp4, frames/, griglia.jpg, trascrizione.txt e meta.json.
 Dipendenze: imageio-ffmpeg, faster-whisper (pip install imageio-ffmpeg faster-whisper).
@@ -106,7 +107,21 @@ def post_da_apify(link: str, token: str, http=_post_http) -> tuple[str, dict]:
     corpo = json.dumps({"directUrls": [link], "resultsType": "posts", "resultsLimit": 1}).encode()
     # Il token va nell'intestazione, così non finisce negli URL né nei messaggi di errore.
     intestazioni = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    risultati = http(URL_APIFY, corpo, intestazioni, TIMEOUT_APIFY)
+    return _video_e_dati(http(URL_APIFY, corpo, intestazioni, TIMEOUT_APIFY))
+
+
+def post_da_file(percorso: Path) -> tuple[str, dict]:
+    """Post di apify/instagram-scraper salvato da Claude dopo averlo letto con il connettore Apify."""
+    try:
+        contenuto = json.loads(Path(percorso).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as errore:
+        raise ErroreSkill(f"{percorso}: {errore}") from None
+    if isinstance(contenuto, dict) and isinstance(contenuto.get("items"), list):
+        contenuto = contenuto["items"]  # risposta intera di get-dataset-items
+    return _video_e_dati(contenuto if isinstance(contenuto, list) else [contenuto])
+
+
+def _video_e_dati(risultati: list) -> tuple[str, dict]:
     if not risultati:
         raise ErroreSkill("Apify non ha restituito nessun risultato (post privato, rimosso o link errato?)")
     post = risultati[0]
@@ -310,7 +325,11 @@ def prepara(arg) -> int:
     cartella.mkdir(parents=True, exist_ok=True)
     video = cartella / "video.mp4"
     post, origine = None, sorgente.tipo
-    if sorgente.tipo == "instagram":
+    if arg.post:
+        video_url, post = post_da_file(arg.post)
+        scarica(video_url, video)
+        origine = "apify (connettore)"
+    elif sorgente.tipo == "instagram":
         video_url, post = post_da_apify(sorgente.valore, token_apify())
         scarica(video_url, video)
         origine = "apify"
@@ -330,7 +349,7 @@ def prepara(arg) -> int:
     meta = {
         "codice": sorgente.codice,
         "link_instagram": sorgente.link,
-        "origine": origine,  # apify, video_url o file
+        "origine": origine,  # apify, apify (connettore), video_url o file
         "file_video": str(video if sorgente.tipo == "file" else video.relative_to(cartella)),
         "preparato_il": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "modalita": arg.modalita,
@@ -368,6 +387,7 @@ def main(argv=None) -> int:
     p.add_argument("sorgente", help="link Instagram, link diretto al video o file video")
     p.add_argument("--modalita", choices=MODALITA, default="rapida")
     p.add_argument("--video-url", help="link diretto al video già pronto (salta Apify)")
+    p.add_argument("--post", help="file JSON con il post letto dal connettore Apify (salta la chiave)")
     p.add_argument("--codice", help="nome della cartella di uscita")
     p.add_argument("--uscita", default="analisi", help="cartella che contiene le analisi")
     v = comandi.add_parser("verifica", help="controlla i campi di analisi.json")
