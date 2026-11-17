@@ -18,4 +18,7 @@
   - account personali di persone (titolari, collaboratori, clienti): mai;
   - Apify serve anche a trovare il nome utente di un'attività e a leggere i siti delle attività che
     dalla sessione non si aprono. Video e trascrizioni stanno in `analisi/`, fuori dal repository.
+- Google Maps: ricerca e dati di base con l'API Places; Apify (Google Maps Scraper) solo per i dati
+  pubblici della scheda che Places non dà (scheda rivendicata, risposte del titolare alle recensioni,
+  aggiornamenti, link di prenotazione). Mai nomi o dati degli autori delle recensioni.
 - Testi, nomi e commenti in italiano.

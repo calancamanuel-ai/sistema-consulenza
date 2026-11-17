@@ -31,3 +31,5 @@ opportunita:
     catena: -3                 # franchising o catena
     prenotazione_moderna: -1   # già un sistema di prenotazione moderno e completo
     nessuna_presenza: -1       # nessuna presenza online e nessuna attività sui social
+    scheda_non_reclamata: 2    # scheda Google mai rivendicata dal titolare
+    scheda_trascurata: 1       # scheda rivendicata ma senza risposte alle recensioni né aggiornamenti

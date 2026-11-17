@@ -44,7 +44,15 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    letti con l'API ufficiale, come vuole il codice.
    Per giudicare se foto e video sono curati, guarda le immagini dei post (`file` e `copertina`
    dell'API ufficiale) o usa la skill `guarda-reel` su un Reel recente.
-4. **Segnali** (solo quelli veri):
+4. **Scheda Google.** Places non dice se la scheda è stata rivendicata: per tutte le attività della
+   zona insieme, chiama con il connettore Apify l'attore `compass/crawler-google-places` con
+   `placeIds` (gli place_id del foglio), `language` "it", `scrapePlaceDetailPage` true,
+   `maxReviews` 10, `reviewsSort` "newest", `scrapeReviewsPersonalData` false e
+   `callOptions.maxTotalChargeUsd` 1. Dai risultati leggi `claimThisBusiness` (true: scheda
+   non rivendicata), `ownerUpdates`, `responseFromOwnerText` delle recensioni e `bookingLinks`;
+   annota nelle note quello che serve. Nomi e testi delle recensioni non vanno né nel foglio né
+   nel repository.
+5. **Segnali** (solo quelli veri):
 
    | Segnale | Quando |
    | --- | --- |
@@ -55,16 +63,19 @@ Comandi: `python scripts/attivita.py --help`. Punti dei segnali in `config/punte
    | `catena` | Franchising, catena o rete con sito e prenotazioni gestiti dalla sede centrale |
    | `prenotazione_moderna` | Prenotazione online completa (Treatwell, Fresha, sistema proprio con agenda), anche senza sito proprio. Le schede Fresha con "Call to book" non sono affiliate e non contano |
    | `nessuna_presenza` | Nessun sito e nessun social attivo |
+   | `scheda_non_reclamata` | Su Maps la scheda non è stata rivendicata (`claimThisBusiness` true) |
+   | `scheda_trascurata` | Scheda rivendicata, ma il titolare non ha risposto a nessuna delle ultime 10 recensioni e non pubblica aggiornamenti |
 
    `molte_recensioni` non si indica: lo aggiunge il codice da 100 recensioni su Maps in su.
-5. **Motivazione e automazioni.** Una frase su cosa si è notato, legata ai segnali. Poi da 1 a 3
+6. **Motivazione e automazioni.** Una frase su cosa si è notato, legata ai segnali. Poi da 1 a 3
    automazioni concrete per quell'attività, per esempio:
    - parrucchieri ed estetiste: promemoria degli appuntamenti su WhatsApp, richiamo dei clienti
      che non tornano da tempo, prenotazione online sul sito, risposte automatiche ai messaggi;
    - officine: promemoria di tagliando e revisione, avviso "auto pronta", preventivi più rapidi,
      prenotazione online;
-   - per tutti: sito vetrina se manca, richiesta di recensioni dopo il servizio.
-6. **Scrittura.**
+   - per tutti: sito vetrina se manca, richiesta di recensioni dopo il servizio, rivendicazione e
+     configurazione della scheda Google, risposte alle recensioni.
+7. **Scrittura.**
 
    ```bash
    python scripts/attivita.py analizza PLACE_ID --instagram NOME --segnali instagram_attivo,nessun_sito,indipendente --motivazione "..." --automazione "..." --automazione "..."

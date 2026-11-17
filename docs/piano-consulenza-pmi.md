@@ -83,6 +83,8 @@ Ogni segnale aggiunge o toglie punti; il totale ordina le attività da contattar
 | Franchising o catena | Maps, sito | −3 |
 | Già un sistema di prenotazione moderno e completo | Sito | −1 |
 | Nessuna presenza online e nessuna attività sui social | Maps, Instagram | −1 |
+| Scheda Google mai rivendicata dal titolare | Maps (Apify) | +2 |
+| Scheda rivendicata ma trascurata: nessuna risposta alle ultime recensioni, nessun aggiornamento | Maps (Apify) | +1 |
 
 Logica: i segnali sono strutturali, non basati sul tono delle recensioni. Instagram attivo dice che l'attività investe nella promozione; la mancanza del sito, solo se Instagram è attivo, dice che c'è un bisogno chiaro. Insieme fanno +4, il punteggio più alto: è il caso tipico di chi pensa che il sito sia costoso o impegnativo (per esempio un'officina con un Instagram curato e senza sito).
 

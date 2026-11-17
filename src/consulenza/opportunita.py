@@ -19,6 +19,8 @@ SEGNALI = (
     "catena",
     "prenotazione_moderna",
     "nessuna_presenza",
+    "scheda_non_reclamata",
+    "scheda_trascurata",
 )
 
 # Coppie che non possono essere vere insieme: indicano un errore nell'analisi.
@@ -28,6 +30,7 @@ INCOMPATIBILI = (
     ("nessuna_presenza", "instagram_attivo"),
     ("nessuna_presenza", "sito_debole"),
     ("nessuna_presenza", "prenotazione_moderna"),
+    ("scheda_non_reclamata", "scheda_trascurata"),
 )
 
 

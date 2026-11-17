@@ -58,6 +58,8 @@ def test_punti_dei_segnali_come_nel_piano():
         "catena": -3,
         "prenotazione_moderna": -1,
         "nessuna_presenza": -1,
+        "scheda_non_reclamata": 2,
+        "scheda_trascurata": 1,
     }
 
 

@@ -16,6 +16,16 @@ def test_instagram_attivo_e_nessun_sito_fanno_il_massimo():
     )
 
 
+def test_scheda_google_non_reclamata():
+    assert calcola({"scheda_non_reclamata", "indipendente"}, PUNTI) == Punteggio(
+        totale=3, segnali=("indipendente", "scheda_non_reclamata")
+    )
+
+
+def test_scheda_google_trascurata():
+    assert calcola({"scheda_trascurata"}, PUNTI).totale == 1
+
+
 def test_nessun_sito_senza_instagram_attivo_non_conta():
     assert calcola({"nessun_sito"}, PUNTI) == Punteggio(totale=0, segnali=())
 
@@ -71,6 +81,7 @@ def test_segnale_sconosciuto():
         {"nessun_sito", "sito_debole"},
         {"nessuna_presenza", "instagram_attivo"},
         {"nessuna_presenza", "sito_debole"},
+        {"scheda_non_reclamata", "scheda_trascurata"},
     ],
 )
 def test_segnali_incompatibili(segnali):
