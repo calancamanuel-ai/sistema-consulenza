@@ -15,7 +15,9 @@
           "comments_count": 6,
           "view_count": 2310,
           "permalink": "https://www.instagram.com/reel/ESEMPIO1/",
-          "id": "18000000000000001"
+          "id": "18000000000000001",
+          "media_url": "https://cdn.example.invalid/reel1.mp4",
+          "thumbnail_url": "https://cdn.example.invalid/reel1.jpg"
         },
         {
           "timestamp": "2026-11-01T09:15:00+0000",
@@ -23,7 +25,8 @@
           "like_count": 40,
           "comments_count": 2,
           "permalink": "https://www.instagram.com/p/ESEMPIO2/",
-          "id": "18000000000000002"
+          "id": "18000000000000002",
+          "media_url": "https://cdn.example.invalid/foto2.jpg"
         },
         {
           "timestamp": "2026-10-20T12:00:00+0000",
@@ -33,7 +36,11 @@
           "id": "18000000000000003"
         }
       ],
-      "paging": {"cursors": {"after": "cursore-esempio"}}
+      "paging": {
+        "cursors": {
+          "after": "cursore-esempio"
+        }
+      }
     },
     "id": "17841400000000001"
   },

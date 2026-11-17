@@ -3,6 +3,7 @@
 # quindi si escludono tutti i .json tranne le risposte simulate dei test.
 *.json
 !tests/risposte/*.json
+!.claude/settings.json
 .env
 .env.*
 *.pem
@@ -13,6 +14,9 @@ credenziali/
 # Esportazioni del foglio (contengono dati personali)
 *.xlsx
 *.ods
+
+# Video, fotogrammi e trascrizioni della skill guarda-reel (contenuti di altri)
+analisi/
 
 # Python
 __pycache__/

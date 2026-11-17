@@ -32,7 +32,7 @@ def test_richiesta_business_discovery():
     assert richiesta["params"] == {
         "fields": "business_discovery.username(officina_esempio)"
         "{username,name,biography,website,followers_count,media_count,"
-        "media.limit(12){timestamp,media_type,like_count,comments_count,view_count,permalink}}"
+        "media.limit(12){timestamp,media_type,like_count,comments_count,view_count,permalink,media_url,thumbnail_url}}"
     }
     assert richiesta["timeout"] > 0
 
@@ -82,7 +82,12 @@ def test_dati_dei_post_recenti():
         commenti=6,
         visualizzazioni=2310,
         link="https://www.instagram.com/reel/ESEMPIO1/",
+        file="https://cdn.example.invalid/reel1.mp4",
+        copertina="https://cdn.example.invalid/reel1.jpg",
     )
+    assert foto.file == "https://cdn.example.invalid/foto2.jpg"
+    assert foto.copertina is None  # thumbnail_url esiste solo per i video
+    assert carosello.file is None  # media_url manca per i contenuti protetti da copyright
     assert foto.visualizzazioni is None  # view_count esiste solo per i Reel
     assert carosello.like is None  # like nascosti dal titolare
     assert carosello.commenti == 0

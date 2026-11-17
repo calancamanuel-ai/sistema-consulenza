@@ -16,7 +16,10 @@ VERSIONE_API = "v26.0"  # Graph API di luglio 2026
 URL_BASE = f"https://graph.facebook.com/{VERSIONE_API}/"
 CAMPI_PROFILO = ("username", "name", "biography", "website", "followers_count", "media_count")
 # view_count esiste solo per i Reel; like_count manca se il titolare nasconde i like.
-CAMPI_POST = ("timestamp", "media_type", "like_count", "comments_count", "view_count", "permalink")
+# media_url (file della foto o del video) manca per i contenuti protetti da copyright;
+# thumbnail_url (copertina) esiste solo per i video. I link scadono dopo qualche ora.
+CAMPI_POST = ("timestamp", "media_type", "like_count", "comments_count", "view_count", "permalink",
+              "media_url", "thumbnail_url")
 ACCOUNT_NON_TROVATO = 2207013  # sottocodice: account inesistente o non professionale
 _USERNAME = re.compile(r"[A-Za-z0-9._]{1,30}")
 
@@ -29,6 +32,8 @@ class Post:
     commenti: int | None
     visualizzazioni: int | None
     link: str | None
+    file: str | None = None
+    copertina: str | None = None
 
 
 @dataclass(frozen=True)
@@ -62,6 +67,8 @@ def _post(dati: dict) -> Post:
         commenti=dati.get("comments_count"),
         visualizzazioni=dati.get("view_count"),
         link=dati.get("permalink"),
+        file=dati.get("media_url"),
+        copertina=dati.get("thumbnail_url"),
     )
 
 
