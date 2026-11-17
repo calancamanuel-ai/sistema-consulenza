@@ -31,8 +31,9 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
    - **Scheda di una pagina:** cosa si è notato (dai segnali, in parole semplici), 1-3 automazioni
      con il tempo risparmiato stimato a settimana (dire come è stimato), servizi proponibili (colonna
      `servizi`), prezzi di lancio del piano (`docs/piano-consulenza-pmi.md`, "Materiale per il primo
-     contatto") con la formula: "Da X €. Dopo l'analisi gratuita ricevi un preventivo a prezzo fisso,
-     che non cambia in corso d'opera."
+     contatto"), ognuno come "da X €", e sotto la frase: "I prezzi sono di partenza: dopo l'analisi
+     gratuita ricevi un preventivo a prezzo fisso, che non cambia in corso d'opera." (la X non va mai
+     lasciata nel testo).
    - **Cosa dire:** apertura per telefono e per visita, in poche frasi, partendo da una cosa vera
      notata sull'attività; risposte brevi alle 4-5 obiezioni più probabili del settore (costo, tempo,
      "ho già Instagram", "i clienti mi chiamano già", "ci penso").

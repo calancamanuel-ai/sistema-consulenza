@@ -50,7 +50,7 @@ const CONFIG = {
   .scelta { display: flex; justify-content: space-between; gap: 12px; width: 100%; text-align: left;
             padding: 12px 14px; border: 1px solid var(--bordo); border-radius: 12px; background: #fff;
             font: inherit; cursor: pointer; }
-  .scelta small { color: var(--tenue); }
+  .scelta small { color: var(--tenue); white-space: nowrap; }
   .scelta[aria-pressed="true"] { border-color: var(--colore); box-shadow: 0 0 0 2px var(--colore) inset; }
   .giorni { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .giorno { flex: 0 0 auto; width: 64px; padding: 8px 4px; text-align: center; border: 1px solid var(--bordo);
