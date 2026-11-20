@@ -36,18 +36,29 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
      lasciata nel testo).
      In fondo, "Cosa non è compreso" (almeno la gestione dei social e la pubblicità; i costi ricorrenti
      sono già nei prezzi) e "Prossimo passo" in una frase (l'incontro di mezz'ora per l'analisi gratuita).
+     Stime prudenti (per esempio 1-2 prenotazioni su 10 online, non 4); se il valore non è il tempo ma i
+     lavori che tornano (officine: tagliandi, revisioni), si scrive così, senza inventare prezzi medi.
+     Le parole tecniche si spiegano: "scheda non rivendicata" = nessuno dell'attività ne ha il controllo.
      Acconto, pagamenti e validità del preventivo non si scrivono finché Manuel non li decide.
    - **Cosa dire:** apertura per telefono e per visita, in poche frasi, partendo da una cosa vera
-     notata sull'attività; risposte brevi alle 4-5 obiezioni più probabili del settore (costo, tempo,
-     "ho già Instagram", "i clienti mi chiamano già", "ci penso").
-     L'apertura non comincia con un complimento (voti, recensioni): parte da un fatto concreto e da una
-     domanda sul loro lavoro. Manuel si presenta per quello che fa ("mi occupo di siti e automazioni"),
-     senza far intendere clienti o lavori che non ha. In fondo, "Se non rispondono": due contatti, dopo
+     notata sull'attività; risposte brevi alle obiezioni generali (costo, tempo, "ho già Instagram",
+     "i clienti mi chiamano già", "ci penso") e a quelle del settore. Bellezza: nipote o conoscente,
+     Treatwell/Fresha, clienti che prenotano per telefono, trattamenti su consulto, doppia agenda,
+     privacy. Officine: "300 € per un messaggio?", il gestionale fa già i richiami, da dove si prendono
+     le scadenze, app della casa auto, clienti senza WhatsApp (SMS), consenso dei clienti, di chi sono
+     numero e dati. Le risposte su proprietà di dati e password si danno solo se Manuel ha deciso di
+     garantirle per iscritto.
+     L'apertura non comincia con un complimento (voti, recensioni) né con "mi occupo di...": prima il
+     fatto concreto e una domanda sul loro lavoro, poi una riga su cosa fa Manuel, senza far intendere
+     clienti o lavori che non ha. Si propone un solo incontro: la mezz'ora di analisi gratuita, dove si
+     mostra la demo. Non si propone quello che l'attività fa già (per esempio l'avviso "auto pronta"
+     se lo mandano a mano su WhatsApp): se non si sa, si chiede. In fondo, "Se non rispondono": due contatti, dopo
      una settimana e dopo altre due, ognuno con un motivo nuovo (un consiglio gratuito e concreto, poi
      una chiusura senza insistere); mai un "volevo solo risentirvi".
 4. **Demo.** Copia di `demo/demo.html` con il blocco `CONFIG` compilato per l'attività: nome,
-   settore, servizi e prezzi indicativi presi dal sito o dal listino, automazioni proposte. Nessun
-   nome di persona. La scritta "Esempio preparato per <attività>, non è il loro sito" resta visibile.
+   settore, orari con la pausa, servizi con durate indicative e promozioni in corso (con la data) presi
+   dal sito, dal listino o dai social, automazioni proposte. Logo e una o due foto dei lavori senza volti
+   (Instagram con l'API ufficiale), incorporati nel file. Nessun nome di persona. La scritta "Esempio preparato per <attività>, non è il loro sito" resta visibile.
    Controllo con Playwright (390 px e 1280 px, nessun errore in console), poi il file HTML va nella
    cartella Drive. La demo non si pubblica online: porta nome e marchio di un'attività reale.
 5. **Revisione dei testi**, prima di consegnare, con le skill di marketing se ci sono:
