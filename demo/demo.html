@@ -25,7 +25,7 @@ const CONFIG = {
     { nome: "Colore", durata: 90, prezzo: "da 45 €" },
   ],
   nota_servizi: "Durate indicative: il centro le adatta ai suoi tempi.",
-  veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" }, revisioni: true,  // solo officina: auto d'esempio; false se le revisioni le fanno fuori
+  veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" }, revisioni: true, revisione_extra: "",  // solo officina: revisioni false se non se ne occupano; revisione_extra = frase in più nel messaggio
   nota_chiusura: "Ferie, corsi, ponti: un tocco e quel giorno nessuno può prenotare.",
   richiamo_settimane: 6,        // bellezza: dopo quanto si scrive a chi non torna
   automazioni: [
@@ -414,8 +414,8 @@ function scenari() {
           MESI[mese] + " " + (anno - 1) + ".\nVuole fissare il prossimo? Risponda SÌ e la chiamiamo per l'orario." + firma],
         ["c", "Sì"], ["a", "Bene, la chiamiamo in giornata." + firma]] },
       { nome: "Revisione in scadenza", quando: "Parte da sola un mese prima della scadenza.", msg: [
-        ["a", "Buongiorno, la revisione della sua " + modello + " (" + targa + ") scade a " + MESI[(mese + 1) % 12] +
-          ".\nSe vuole fissare un giorno, risponda SÌ e la chiamiamo." + firma],
+        ["a", "Buongiorno, la revisione della sua " + modello + " (" + targa + ") scade a " + MESI[(mese + 1) % 12] + "." +
+          (C.revisione_extra ? " " + C.revisione_extra : "") + "\nSe vuole fissare un giorno, risponda SÌ e la chiamiamo." + firma],
         ["c", "Sì grazie"], ["a", "Perfetto, la chiamiamo domani mattina." + firma]] },
       { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
         ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
