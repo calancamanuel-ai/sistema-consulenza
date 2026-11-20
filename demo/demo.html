@@ -27,6 +27,7 @@ const CONFIG = {
   nota_servizi: "Durate indicative: il centro le adatta ai suoi tempi.",
   veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" }, revisioni: true, revisione_extra: "",  // solo officina: revisioni false se non se ne occupano; revisione_extra = frase in più nel messaggio
   nota_chiusura: "Ferie, corsi, ponti: un tocco e quel giorno nessuno può prenotare.",
+  canale_messaggi: "Partono dal vostro numero WhatsApp. Se un cliente risponde con altro, il messaggio arriva a voi come sempre.",
   richiamo_settimane: 6,        // bellezza: dopo quanto si scrive a chi non torna
   automazioni: [
     "Prenotazione online sul sito, anche di sera",
@@ -127,19 +128,17 @@ const CONFIG = {
     <div class="giorni" id="giorni"></div>
     <div class="passo" id="p-ora"></div>
     <div class="ore" id="ore"><span class="vuoto">Scelga prima servizio e giorno.</span></div>
-    <div id="dati-auto" hidden>
-      <div class="passo">La sua auto</div>
-      <div class="campi">
-        <label>Modello <input id="modello" autocomplete="off"></label>
-        <label>Targa <input id="targa" autocomplete="off"></label>
-      </div>
+    <div class="passo" id="p-dati"></div>
+    <div class="campi">
+      <label><span id="l-campo1"></span> <input id="campo1" autocomplete="off"></label>
+      <label><span id="l-campo2"></span> <input id="campo2" autocomplete="off"></label>
     </div>
     <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
 
   <section aria-labelledby="t-agenda">
-    <h2 id="t-agenda">2. La vostra agenda</h2>
+    <h2 id="t-agenda"></h2>
     <p class="sotto" id="s-agenda"></p>
     <div class="giorni" id="giorni-agenda"></div>
     <ul class="agenda" id="agenda"></ul>
@@ -148,8 +147,8 @@ const CONFIG = {
   </section>
 
   <section aria-labelledby="t-wa">
-    <h2 id="t-wa">3. Messaggi su WhatsApp che partono da soli</h2>
-    <p class="sotto">Nessuno deve ricordarsi di scriverli. Chi non ha WhatsApp può ricevere un SMS con lo stesso testo.</p>
+    <h2 id="t-wa">3. Messaggi che partono da soli</h2>
+    <p class="sotto" id="s-wa"></p>
     <div class="chips" id="scenari"></div>
     <p class="quando" id="quando"></p>
     <div class="chat" id="chat" aria-live="polite"></div>
@@ -160,7 +159,7 @@ const CONFIG = {
     <p class="sotto">È la prima cosa che vede chi cerca l'attività in zona.</p>
     <div class="schede">
       <div class="scheda"><h3>Oggi</h3><div id="prima"></div></div>
-      <div class="scheda"><h3>Dopo</h3><div id="dopo"></div></div>
+      <div class="scheda"><h3>Cosa cambia</h3><div id="dopo"></div></div>
     </div>
   </section>
 
@@ -203,7 +202,7 @@ const PAUSA = C.pausa ? C.pausa.map(minuti) : null;
 document.documentElement.style.setProperty("--colore", C.colore);
 document.documentElement.style.setProperty("--testata", C.testata);
 document.title = "Demo per " + C.attivita;
-$("avviso").textContent = "Esempio preparato per " + C.attivita + ", non è il loro sito: nessun dato viene inviato.";
+$("avviso").textContent = "Esempio preparato per " + C.attivita + ": non è ancora il vostro sito e nessun dato viene inviato.";
 $("titolo").textContent = C.attivita;
 $("sottotitolo").textContent = (OFFICINA ? "Officina a " : "") + C.citta;
 if (C.logo) { $("logo").src = C.logo; $("logo").alt = "Logo di " + C.attivita; $("logo").hidden = false; }
@@ -221,10 +220,10 @@ function giaPresi(g) {
   const s = g.getDate();
   if (OFFICINA) return [0, 1, 2].slice(0, 1 + (s % 3)).map((k) => ({
     inizio: k === 1 && PAUSA ? PAUSA[1] : AP + k * 30, durata: 30,
-    nome: C.servizi[(s + k) % C.servizi.length].nome, auto: AUTO_FINTE[(s + k) % 3], fonte: "telefono" }));
+    nome: C.servizi[(s + k) % C.servizi.length].nome, auto: AUTO_FINTE[(s + k) % 3], fonte: "online" }));
   return [1 + (s % 4), 7 + (s % 3), 13 + (s % 2)].map((k, i) => {
     const sv = C.servizi[(s + i) % C.servizi.length];
-    return { inizio: AP + k * 30, durata: sv.durata, nome: sv.nome, fonte: i === 1 ? "WhatsApp" : "telefono" };
+    return { inizio: AP + k * 30, durata: sv.durata, nome: sv.nome, fonte: "telefono" };
   }).filter((a) => libero(a.inizio, a.durata, []));
 }
 
@@ -265,10 +264,8 @@ $("p-servizio").textContent = OFFICINA ? "Lavoro" : "Servizio";
 $("p-ora").textContent = OFFICINA ? "Quando lascia l'auto" : "Orario";
 $("prenota").textContent = OFFICINA ? "Invia la richiesta" : "Conferma la prenotazione";
 $("nota-servizi").textContent = C.nota_servizi || "";
-if (OFFICINA) {
-  $("dati-auto").hidden = false;
-  $("modello").placeholder = C.veicolo.modello; $("targa").placeholder = C.veicolo.targa;
-}
+[$("p-dati").textContent, $("l-campo1").textContent, $("campo1").placeholder, $("l-campo2").textContent, $("campo2").placeholder] =
+  OFFICINA ? ["La sua auto", "Modello", C.veicolo.modello, "Targa", C.veicolo.targa] : ["I suoi dati", "Nome", "Nome e cognome", "Telefono", "333 000 0000"];
 
 C.servizi.forEach((s) => {
   const b = crea("button", "scelta"); b.type = "button"; b.setAttribute("aria-pressed", "false");
@@ -325,13 +322,13 @@ function mostraOre() {
 function aggiorna() { $("prenota").disabled = !(scelta.servizio && scelta.giorno && scelta.ora !== null); }
 
 function auto() {
-  return [$("modello").value.trim() || C.veicolo.modello, $("targa").value.trim().toUpperCase() || C.veicolo.targa];
+  return [$("campo1").value.trim() || C.veicolo.modello, $("campo2").value.trim().toUpperCase() || C.veicolo.targa];
 }
 
 $("prenota").onclick = () => {
   prenotazione = { inizio: scelta.ora, durata: OFFICINA ? 30 : scelta.servizio.durata, nome: scelta.servizio.nome,
                    giorno: scelta.giorno, fonte: "online", nuovo: true, daConfermare: OFFICINA };
-  if (OFFICINA) prenotazione.auto = auto();
+  if (OFFICINA) prenotazione.auto = auto(); else prenotazione.cliente = $("campo1").value.trim();
   $("conferma").hidden = false;
   $("conferma").textContent = OFFICINA
     ? "Richiesta inviata: " + prenotazione.nome + ", " + data(scelta.giorno) + ". La trova nell'agenda qui sotto, da confermare."
@@ -345,9 +342,11 @@ $("prenota").onclick = () => {
 
 // --- 2. Agenda del titolare ---
 let giornoAgenda = giorni[0];
+$("t-agenda").textContent = OFFICINA ? "2. Le richieste online" : "2. La vostra agenda";
 $("s-agenda").textContent = OFFICINA
-  ? "Le richieste online arrivano qui insieme alle auto che segnate quando vi chiamano: una sola agenda."
-  : "Gli appuntamenti presi online entrano da soli; quelli presi al telefono o su WhatsApp si segnano qui in un attimo. Una sola agenda, niente doppioni.";
+  ? "Qui arrivano solo le richieste fatte online, e per ognuna vi arriva anche un messaggio su WhatsApp. La vostra agenda di sempre resta com'è: confermate con un tocco."
+  : "Gli appuntamenti online entrano da soli; quelli presi al telefono si segnano in tre tocchi. Se preferite l'agenda di carta, si aprono online solo le fasce che decidete voi.";
+$("s-wa").textContent = C.canale_messaggi;
 $("nota-chiusura").textContent = C.nota_chiusura || "";
 bottoniGiorni($("giorni-agenda"), (g) => { giornoAgenda = g; mostraAgenda(); });
 $("giorni-agenda").firstChild.setAttribute("aria-pressed", "true");
@@ -360,7 +359,7 @@ function mostraAgenda() {
   appuntamenti(giornoAgenda).forEach((a) => {
     const li = crea("li", a.nuovo ? "nuovo" : "");
     li.append(crea("b", "", hhmm(a.inizio)));
-    li.append(crea("span", "", a.nome + (a.auto ? " · " + a.auto.join(", ") : "")));
+    li.append(crea("span", "", a.nome + (a.auto ? " · " + a.auto.join(", ") : a.cliente ? " · " + a.cliente : "")));
     if (a.daConfermare) {
       const b = crea("button", "", "Conferma"); b.type = "button";
       b.onclick = () => { a.daConfermare = false; mostraAgenda(); scenario(0); $("t-wa").scrollIntoView({ behavior: "smooth" }); };
@@ -385,13 +384,13 @@ function attuale() {
   const m = OFFICINA ? AP : (orariLiberi(g, s.durata)[0] ?? AP);
   return { inizio: m, durata: s.durata, nome: s.nome, giorno: g, auto: OFFICINA ? [C.veicolo.modello, C.veicolo.targa] : null };
 }
-// I due primi orari liberi nei giorni dopo l'appuntamento, per chi chiede di spostarlo.
+// I primi due orari liberi nei giorni dopo quello indicato (per spostare un appuntamento o fissarne uno).
 function proposte(p) {
   const out = [];
   for (const g of giorni) {
     if (g <= p.giorno || chiusi.has(g.toDateString())) continue;
-    const liberi = orariLiberi(g, p.durata);
-    if (liberi.length) out.push(data(g) + " alle " + hhmm(liberi[Math.floor(liberi.length / 2)]));
+    const m = OFFICINA ? fasce().filter((f) => !fasciaPiena(g, f)).map((f) => f.inizio)[0] : orariLiberi(g, p.durata)[0];
+    if (m !== undefined) out.push(data(g) + " alle " + hhmm(m));
     if (out.length === 2) break;
   }
   return out;
@@ -404,24 +403,24 @@ function scenari() {
     const [modello, targa] = p.auto || [C.veicolo.modello, C.veicolo.targa];
     const anno = new Date().getFullYear(), mese = new Date().getMonth();
     const gomme = mese >= 8 || mese <= 1 ? "invernali" : "estive";
+    const [x, y] = proposte({ giorno: new Date(), durata: 30 });
+    const fissa = [["c", "Sì"], ["a", "Bene. Può lasciare l'auto:\nA) " + x + "\nB) " + y + "\nRisponda A o B, oppure ci chiami." + firma],
+                   ["c", "B"], ["a", "Fatto: la aspettiamo " + y + "." + firma]];
     return [
       { nome: "Conferma della richiesta", quando: "Parte quando l'officina tocca \"Conferma\" nell'agenda.", msg: [
         ["a", "Buongiorno, abbiamo visto la sua richiesta e va bene.\nLavoro: " + p.nome + "\nAuto: " + modello + ", " + targa +
           "\nQuando lasciarla: " + quando + "\nRisponda 1 se le va bene o 2 per un altro giorno." + firma],
         ["c", "1"], ["a", "Grazie, la aspettiamo " + data(p.giorno) + "." + firma]] },
-      { nome: "Tagliando in scadenza", quando: "Parte da solo un anno dopo l'ultimo tagliando registrato.", msg: [
-        ["a", "Buongiorno, per la sua " + modello + " (" + targa + ") è passato un anno dall'ultimo tagliando, fatto da noi a " +
-          MESI[mese] + " " + (anno - 1) + ".\nVuole fissare il prossimo? Risponda SÌ e la chiamiamo per l'orario." + firma],
-        ["c", "Sì"], ["a", "Bene, la chiamiamo in giornata." + firma]] },
+      { nome: "Tagliando in scadenza", quando: "Parte da solo quando si avvicina il tagliando: un anno dall'ultimo o i chilometri segnati, quello che arriva prima.", msg: [
+        ["a", "Buongiorno, per la sua " + modello + " (" + targa + ") si avvicina il tagliando: l'ultimo l'abbiamo fatto a " +
+          MESI[mese] + " " + (anno - 1) + ".\nVuole fissare il prossimo? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
       { nome: "Revisione in scadenza", quando: "Parte da sola un mese prima della scadenza.", msg: [
         ["a", "Buongiorno, la revisione della sua " + modello + " (" + targa + ") scade a " + MESI[(mese + 1) % 12] + "." +
-          (C.revisione_extra ? " " + C.revisione_extra : "") + "\nSe vuole fissare un giorno, risponda SÌ e la chiamiamo." + firma],
-        ["c", "Sì grazie"], ["a", "Perfetto, la chiamiamo domani mattina." + firma]] },
+          (C.revisione_extra ? " " + C.revisione_extra : "") + "\nVuole fissare un giorno? Risponda SÌ e le proponiamo due date." + firma], ...fissa] },
       { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
         ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
-          " (" + targa + ")? Risponda SÌ e le proponiamo un giorno." + firma],
-        ["c", "Sì, meglio di mattina"], ["a", "Va bene: la chiamiamo per fissare una mattina." + firma]] },
-      { nome: "Recensione", quando: "Parte da sola il giorno dopo il ritiro dell'auto.", msg: [
+          " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
+      { nome: "Recensione", quando: "Parte da sola il giorno dopo il ritiro, una volta sola per cliente.", msg: [
         ["a", "Buongiorno, grazie per averci scelto. Se è tutto a posto con l'auto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
     ].filter((s) => C.revisioni !== false || !s.nome.startsWith("Revisione"));
   }
@@ -438,8 +437,8 @@ function scenari() {
         "\nRisponda A o B, oppure ci chiami." + firma],
       ["c", "B"],
       ["a", "Fatto: appuntamento spostato a " + (b || "un altro giorno") + ". L'orario di prima torna libero per altre clienti." + firma]] },
-    { nome: "Dopo la visita", quando: "Parte da solo la sera del trattamento.", msg: [
-      ["a", "Buonasera, grazie della visita di oggi. Se il trattamento le è piaciuto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
+    { nome: "Dopo la prima visita", quando: "Parte da solo la sera, solo dopo la prima visita di una cliente nuova.", msg: [
+      ["a", "Buonasera, grazie della prima visita da noi. Se il trattamento le è piaciuto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
     { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti.", msg: [
       ["a", "Buongiorno, sono passate " + C.richiamo_settimane + " settimane dall'ultimo appuntamento (" + p.nome +
         ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] },
@@ -483,13 +482,12 @@ $("prima").innerHTML = righe([
   [sp.link, sp.link ? "Link al sito" : "Nessun link al sito o ai social"],
   [false, "Risposte alle recensioni: " + sp.risposte],
 ]);
+// Solo quello che cambia davvero rispetto a oggi.
 $("dopo").innerHTML = righe([
-  [true, "Rivendicata e gestita da voi, gratis"],
-  [true, "Orari e giorni di chiusura sempre aggiornati"],
-  [true, "Foto recenti dei lavori"],
-  [true, OFFICINA ? "Link a sito e richiesta di appuntamento" : "Link a sito, prenotazione e Instagram"],
-  [true, "Risposte alle recensioni"],
-]);
+  [!sp.rivendicata, "Rivendicata e gestita da voi, gratis"], [!sp.orari, "Orari e giorni di chiusura aggiornati"],
+  [sp.foto < 10, "Foto recenti dei lavori"], [!sp.link, "Link al sito"],
+  [true, OFFICINA ? "Link alla richiesta di appuntamento" : "Link alla prenotazione online"], [true, "Risposte alle recensioni"],
+].filter(([cambia]) => cambia));
 
 // --- Cosa cambia ---
 C.automazioni.forEach((a) => $("automazioni").append(crea("li", "", a)));
