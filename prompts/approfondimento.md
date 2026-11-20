@@ -34,9 +34,17 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
      contatto"), ognuno come "da X €", e sotto la frase: "I prezzi sono di partenza: dopo l'analisi
      gratuita ricevi un preventivo a prezzo fisso, che non cambia in corso d'opera." (la X non va mai
      lasciata nel testo).
+     In fondo, "Cosa non è compreso" (almeno la gestione dei social e la pubblicità; i costi ricorrenti
+     sono già nei prezzi) e "Prossimo passo" in una frase (l'incontro di mezz'ora per l'analisi gratuita).
+     Acconto, pagamenti e validità del preventivo non si scrivono finché Manuel non li decide.
    - **Cosa dire:** apertura per telefono e per visita, in poche frasi, partendo da una cosa vera
      notata sull'attività; risposte brevi alle 4-5 obiezioni più probabili del settore (costo, tempo,
      "ho già Instagram", "i clienti mi chiamano già", "ci penso").
+     L'apertura non comincia con un complimento (voti, recensioni): parte da un fatto concreto e da una
+     domanda sul loro lavoro. Manuel si presenta per quello che fa ("mi occupo di siti e automazioni"),
+     senza far intendere clienti o lavori che non ha. In fondo, "Se non rispondono": due contatti, dopo
+     una settimana e dopo altre due, ognuno con un motivo nuovo (un consiglio gratuito e concreto, poi
+     una chiusura senza insistere); mai un "volevo solo risentirvi".
 4. **Demo.** Copia di `demo/demo.html` con il blocco `CONFIG` compilato per l'attività: nome,
    settore, servizi e prezzi indicativi presi dal sito o dal listino, automazioni proposte. Nessun
    nome di persona. La scritta "Esempio preparato per <attività>, non è il loro sito" resta visibile.
@@ -52,6 +60,9 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
    - `cold-email:cold-email-hooks` per l'apertura: un fatto vero, recente e datato legato all'offerta
      (una promozione in corso, un dettaglio delle recensioni), non un complimento generico.
    - `copywriting-kit:copy-edit` per la forma: frasi semplici, niente superlativi né parole vuote.
+   - `small-business:proposal-builder` per la scheda (cosa non è compreso, prossimo passo, nessun prezzo
+     inventato) e `small-business:outreach-composer` per "Cosa dire" (voce di Manuel, controllo dei
+     testi che sembrano scritti da una macchina, contatti successivi con un motivo ciascuno).
 6. **Nota nel foglio.** `python scripts/attivita.py nota PLACE_ID "Fase 3: materiale pronto, <link>"`.
 
 La prima attività si mostra a Manuel prima di preparare le altre.
