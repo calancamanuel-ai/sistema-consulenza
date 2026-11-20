@@ -39,72 +39,52 @@ const CONFIG = {
 </script>
 <style>
   :root {
-    --colore: #7a4b8c; --testata: #2b2830; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8;
-    --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46; --attesa: #9a6700;
-  }
+    --colore: #7a4b8c; --testata: #2b2830; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8; --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46; --attesa: #9a6700; }
   * { box-sizing: border-box; }
-  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-         color: var(--testo); background: var(--sfondo); }
+  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--testo); background: var(--sfondo); }
   .avviso { background: #2b2830; color: #fff; text-align: center; font-size: 13px; padding: 8px 16px; }
   header { background: var(--testata); color: #fff; padding: 28px 16px 24px; text-align: center; }
-  header img.logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; display: block;
-                    margin: 0 auto 12px; border: 2px solid rgba(255,255,255,.25); }
+  header img.logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 12px; border: 2px solid rgba(255,255,255,.25); }
   header h1 { margin: 0 0 4px; font-size: 28px; line-height: 1.2; } header p { margin: 0; opacity: .85; }
-  .foto { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px;
-          max-width: 720px; margin: 20px auto 0; }
+  .foto { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; max-width: 720px; margin: 20px auto 0; }
   .foto img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: block; }
   main { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
-  section { background: var(--carta); border: 1px solid var(--bordo); border-radius: 16px;
-            padding: 20px 16px; margin-top: 20px; } h2 { margin: 0 0 4px; font-size: 20px; }
+  section { background: var(--carta); border: 1px solid var(--bordo); border-radius: 16px; padding: 20px 16px; margin-top: 20px; } h2 { margin: 0 0 4px; font-size: 20px; }
   .sotto { margin: 0 0 16px; color: var(--tenue); font-size: 14px; } .nota { margin: 8px 0 0; color: var(--tenue); font-size: 13px; }
   .scelte { display: grid; gap: 8px; }
-  .scelta { display: flex; justify-content: space-between; gap: 12px; width: 100%; text-align: left;
-            padding: 12px 14px; border: 1px solid var(--bordo); border-radius: 12px; background: #fff;
-            font: inherit; cursor: pointer; color: inherit; }
+  .scelta { display: flex; justify-content: space-between; gap: 12px; width: 100%; text-align: left; padding: 12px 14px; border: 1px solid var(--bordo); border-radius: 12px; background: #fff; font: inherit; cursor: pointer; color: inherit; }
   .scelta small { color: var(--tenue); text-align: right; } .scelta[aria-pressed="true"] { border-color: var(--colore); box-shadow: 0 0 0 2px var(--colore) inset; }
   .giorni { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-  .giorno { flex: 0 0 auto; width: 64px; padding: 8px 4px; text-align: center; border: 1px solid var(--bordo);
-            border-radius: 12px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; color: inherit; }
+  .giorno { flex: 0 0 auto; width: 64px; padding: 8px 4px; text-align: center; border: 1px solid var(--bordo); border-radius: 12px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; color: inherit; }
   .giorno b { display: block; font-size: 18px; } .giorno:disabled { color: #b9b4c2; cursor: default; background: #f1eff4; }
   .giorno[aria-pressed="true"], .ora[aria-pressed="true"], .chip[aria-pressed="true"] {
     background: var(--colore); color: #fff; border-color: var(--colore); }
   .ore { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; } .ore.larghe { grid-template-columns: 1fr; }
-  .ora { padding: 8px 6px; border: 1px solid var(--bordo); border-radius: 10px; background: #fff;
-         font: inherit; cursor: pointer; color: inherit; }
+  .ora { padding: 8px 6px; border: 1px solid var(--bordo); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; color: inherit; }
   .ora:disabled { color: #b9b4c2; text-decoration: line-through; cursor: default; }
-  .vuoto { color: var(--tenue); font-size: 14px; }
-  .passo { margin: 16px 0 8px; font-weight: 600; font-size: 14px; }
+  .vuoto { color: var(--tenue); font-size: 14px; } .passo { margin: 16px 0 8px; font-weight: 600; font-size: 14px; }
   .campi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .campi label { font-size: 13px; color: var(--tenue); }
-  .campi input { display: block; width: 100%; margin-top: 4px; padding: 10px; font: inherit;
-                 border: 1px solid var(--bordo); border-radius: 10px; }
-  .bottone { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 12px;
-             background: var(--colore); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  .campi input, .campi select { display: block; width: 100%; margin-top: 4px; padding: 10px; font: inherit; border: 1px solid var(--bordo); border-radius: 10px; }
+  .bottone { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 12px; background: var(--colore); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
   .bottone:disabled { opacity: .4; cursor: default; } .bottone.chiaro { background: #fff; color: var(--colore); border: 1px solid var(--colore); }
   .conferma { margin-top: 16px; padding: 14px; border-radius: 12px; background: #eaf6ef; color: var(--ok); }
   .agenda { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
-  .agenda li { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: center;
-               padding: 10px 12px; border: 1px solid var(--bordo); border-radius: 12px; font-size: 15px; }
+  .agenda li { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--bordo); border-radius: 12px; font-size: 15px; }
   .agenda li.nuovo { border-color: var(--colore); box-shadow: 0 0 0 1px var(--colore) inset; }
   .agenda .fonte { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: #f1eff4; color: var(--tenue); }
   .agenda .fonte.attesa { background: #fff4d6; color: var(--attesa); }
-  .agenda button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 0;
-                   background: var(--colore); color: #fff; cursor: pointer; }
+  .agenda button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 0; background: var(--colore); color: #fff; cursor: pointer; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .chip { padding: 8px 12px; border: 1px solid var(--bordo); border-radius: 99px; background: #fff;
-          font: inherit; font-size: 14px; cursor: pointer; color: inherit; }
+  .chip { padding: 8px 12px; border: 1px solid var(--bordo); border-radius: 99px; background: #fff; font: inherit; font-size: 14px; cursor: pointer; color: inherit; }
   .quando { font-size: 13px; color: var(--tenue); margin: 0 0 8px; }
-  .chat { background: var(--wa-sfondo); border-radius: 12px; padding: 12px; min-height: 160px;
-          display: flex; flex-direction: column; gap: 8px; }
-  .msg { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; background: #fff;
-         box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; animation: entra .25s ease-out; }
+  .chat { background: var(--wa-sfondo); border-radius: 12px; padding: 12px; min-height: 160px; display: flex; flex-direction: column; gap: 8px; }
+  .msg { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; animation: entra .25s ease-out; }
   .msg.cliente { align-self: flex-end; background: var(--wa); } .msg time { display: block; text-align: right; font-size: 11px; color: var(--tenue); }
-  @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .msg { animation: none; } }
+  @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } } @media (prefers-reduced-motion: reduce) { .msg { animation: none; } }
   .schede { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 520px) { .schede, .campi { grid-template-columns: 1fr; } .foto img { height: 140px; } }
   .scheda { border: 1px solid var(--bordo); border-radius: 12px; padding: 12px; font-size: 14px; }
-  .scheda h3 { margin: 0 0 8px; font-size: 15px; } .riga { display: flex; gap: 8px; padding: 4px 0; }
-  .no { color: #b3261e; } .si { color: var(--ok); }
+  .no { color: #b3261e; } .si { color: var(--ok); } .scheda h3 { margin: 0 0 8px; font-size: 15px; } .riga { display: flex; gap: 8px; padding: 4px 0; }
   ul.lista { margin: 0; padding-left: 20px; } ul.lista li { margin: 6px 0; } .tempo { margin-top: 12px; font-weight: 600; }
   footer { text-align: center; color: var(--tenue); font-size: 13px; padding: 24px 16px; }
 </style>
@@ -133,6 +113,7 @@ const CONFIG = {
       <label><span id="l-campo1"></span> <input id="campo1" autocomplete="off"></label>
       <label><span id="l-campo2"></span> <input id="campo2" autocomplete="off"></label>
     </div>
+    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label>
     <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
@@ -142,6 +123,8 @@ const CONFIG = {
     <p class="sotto" id="s-agenda"></p>
     <div class="giorni" id="giorni-agenda"></div>
     <ul class="agenda" id="agenda"></ul>
+    <div class="campi" id="segna" hidden><select id="segna-servizio" aria-label="Servizio"></select><select id="segna-ora" aria-label="Orario"></select></div>
+    <button class="bottone" id="segna-bottone" hidden>Segna un appuntamento preso al telefono</button>
     <button class="bottone chiaro" id="chiudi"></button>
     <p class="nota" id="nota-chiusura"></p>
   </section>
@@ -173,6 +156,7 @@ const CONFIG = {
 
 <script>
 const C = CONFIG;
+C.servizi = C.servizi.filter((s) => !s.fino || new Date(s.fino + "T23:59") >= new Date());  // promozioni scadute fuori
 const OFFICINA = C.settore === "officina";
 const $ = (id) => document.getElementById(id);
 const GIORNI = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
@@ -215,6 +199,7 @@ for (let i = 1; giorni.length < 7 && i < 21; i++) {
   if (!C.giorni_chiusi.includes(g.getDay())) giorni.push(g);
 }
 const chiusi = new Set();   // giorni chiusi dal titolare nella demo
+const telefonate = [];      // appuntamenti presi al telefono e segnati nella demo
 
 function giaPresi(g) {
   const s = g.getDate();
@@ -234,7 +219,7 @@ function libero(inizio, durata, presi) {
   return !presi.some((p) => sovrappone(inizio, durata, p.inizio, p.durata));
 }
 function appuntamenti(g) {
-  const lista = giaPresi(g);
+  const lista = giaPresi(g).concat(telefonate.filter((t) => stessoGiorno(t.giorno, g)));
   if (prenotazione && stessoGiorno(prenotazione.giorno, g)) lista.push(prenotazione);
   return lista.sort((a, b) => a.inizio - b.inizio);
 }
@@ -260,12 +245,13 @@ $("t-prenota").textContent = OFFICINA ? "1. Richiesta di appuntamento online" : 
 $("s-prenota").textContent = OFFICINA
   ? "Il cliente sceglie il lavoro e quando lasciare l'auto, anche la sera. La richiesta arriva in agenda e la conferma l'officina: niente si fissa da solo."
   : "La cliente sceglie servizio, giorno e ora, anche la sera o nel fine settimana. Vede solo gli orari in cui il trattamento ci sta tutto.";
-$("p-servizio").textContent = OFFICINA ? "Lavoro" : "Servizio";
-$("p-ora").textContent = OFFICINA ? "Quando lascia l'auto" : "Orario";
+$("p-servizio").textContent = OFFICINA ? "Lavoro" : "Servizio"; $("p-ora").textContent = OFFICINA ? "Quando lascia l'auto" : "Orario";
 $("prenota").textContent = OFFICINA ? "Invia la richiesta" : "Conferma la prenotazione";
 $("nota-servizi").textContent = C.nota_servizi || "";
 [$("p-dati").textContent, $("l-campo1").textContent, $("campo1").placeholder, $("l-campo2").textContent, $("campo2").placeholder] =
   OFFICINA ? ["La sua auto", "Modello", C.veicolo.modello, "Targa", C.veicolo.targa] : ["I suoi dati", "Nome", "Nome e cognome", "Telefono", "333 000 0000"];
+$("l-consenso").textContent = OFFICINA ? "Accetto di ricevere su WhatsApp i messaggi sulle scadenze della mia auto."
+  : "Accetto di ricevere i promemoria degli appuntamenti.";
 
 C.servizi.forEach((s) => {
   const b = crea("button", "scelta"); b.type = "button"; b.setAttribute("aria-pressed", "false");
@@ -344,7 +330,7 @@ $("prenota").onclick = () => {
 let giornoAgenda = giorni[0];
 $("t-agenda").textContent = OFFICINA ? "2. Le richieste online" : "2. La vostra agenda";
 $("s-agenda").textContent = OFFICINA
-  ? "Qui arrivano solo le richieste fatte online, e per ognuna vi arriva anche un messaggio su WhatsApp. La vostra agenda di sempre resta com'è: confermate con un tocco."
+  ? "Qui arrivano solo le richieste fatte online, e per ognuna vi arriva anche un messaggio su WhatsApp. La vostra agenda di sempre resta com'è: confermate con un tocco. I giorni che segnate come pieni non vengono proposti."
   : "Gli appuntamenti online entrano da soli; quelli presi al telefono si segnano in tre tocchi. Se preferite l'agenda di carta, si aprono online solo le fasce che decidete voi.";
 $("s-wa").textContent = C.canale_messaggi;
 $("nota-chiusura").textContent = C.nota_chiusura || "";
@@ -354,8 +340,9 @@ $("giorni-agenda").firstChild.setAttribute("aria-pressed", "true");
 function mostraAgenda() {
   const ul = $("agenda"); ul.innerHTML = "";
   const chiave = giornoAgenda.toDateString();
-  $("chiudi").textContent = chiusi.has(chiave) ? "Riapri " + data(giornoAgenda) : "Segna chiuso " + data(giornoAgenda);
-  if (chiusi.has(chiave)) { ul.append(crea("li", "", "Giorno chiuso: dal sito non si può prenotare.")); return; }
+  $("chiudi").textContent = (chiusi.has(chiave) ? "Riapri " : OFFICINA ? "Segna pieno " : "Segna chiuso ") + data(giornoAgenda);
+  mostraSegna();
+  if (chiusi.has(chiave)) { ul.append(crea("li", "", OFFICINA ? "Giorno pieno: non viene proposto a nessuno." : "Giorno chiuso: dal sito non si può prenotare.")); return; }
   appuntamenti(giornoAgenda).forEach((a) => {
     const li = crea("li", a.nuovo ? "nuovo" : "");
     li.append(crea("b", "", hhmm(a.inizio)));
@@ -374,6 +361,20 @@ $("chiudi").onclick = () => {
   const k = giornoAgenda.toDateString();
   if (chiusi.has(k)) chiusi.delete(k); else chiusi.add(k);
   mostraAgenda(); aggiornaChiusi();
+};
+// Bellezza: appuntamento preso al telefono in tre tocchi (servizio, orario, Segna).
+function mostraSegna() {
+  if (OFFICINA) return;
+  $("segna").hidden = $("segna-bottone").hidden = chiusi.has(giornoAgenda.toDateString());
+  const sv = C.servizi[$("segna-servizio").selectedIndex] || C.servizi[0];
+  $("segna-ora").replaceChildren(...orariLiberi(giornoAgenda, sv.durata).map((m) => new Option(hhmm(m), m)));
+}
+C.servizi.forEach((s) => $("segna-servizio").append(new Option(s.nome))); $("segna-servizio").onchange = mostraSegna;
+$("segna-bottone").onclick = () => {
+  const sv = C.servizi[$("segna-servizio").selectedIndex];
+  if (!$("segna-ora").value) return;
+  telefonate.push({ giorno: giornoAgenda, inizio: Number($("segna-ora").value), durata: sv.durata, nome: sv.nome, fonte: "telefono", nuovo: true });
+  mostraAgenda(); mostraOre();
 };
 mostraAgenda();
 
@@ -404,14 +405,14 @@ function scenari() {
     const anno = new Date().getFullYear(), mese = new Date().getMonth();
     const gomme = mese >= 8 || mese <= 1 ? "invernali" : "estive";
     const [x, y] = proposte({ giorno: new Date(), durata: 30 });
-    const fissa = [["c", "Sì"], ["a", "Bene. Può lasciare l'auto:\nA) " + x + "\nB) " + y + "\nRisponda A o B, oppure ci chiami." + firma],
-                   ["c", "B"], ["a", "Fatto: la aspettiamo " + y + "." + firma]];
+    const fissa = [["c", "Sì"], ["a", "Bene. Abbiamo posto:\nA) " + x + "\nB) " + y + "\nRisponda A o B, oppure ci chiami." + firma],
+                   ["c", "B"], ["a", "Grazie: lo segniamo e glielo confermiamo entro oggi." + firma], ["a", "Confermato: la aspettiamo " + y + "." + firma]];
     return [
       { nome: "Conferma della richiesta", quando: "Parte quando l'officina tocca \"Conferma\" nell'agenda.", msg: [
-        ["a", "Buongiorno, abbiamo visto la sua richiesta e va bene.\nLavoro: " + p.nome + "\nAuto: " + modello + ", " + targa +
-          "\nQuando lasciarla: " + quando + "\nRisponda 1 se le va bene o 2 per un altro giorno." + firma],
-        ["c", "1"], ["a", "Grazie, la aspettiamo " + data(p.giorno) + "." + firma]] },
-      { nome: "Tagliando in scadenza", quando: "Parte da solo quando si avvicina il tagliando: un anno dall'ultimo o i chilometri segnati, quello che arriva prima.", msg: [
+        ["a", "Buongiorno, la sua richiesta è confermata.\nLavoro: " + p.nome + "\nAuto: " + modello + ", " + targa +
+          "\nQuando lasciarla: " + quando + "\nSe non le va più bene, risponda 2 e le proponiamo un altro giorno." + firma],
+        ["c", "Perfetto, grazie"]] },
+      { nome: "Tagliando in scadenza", quando: "Parte da solo un anno dopo l'ultimo tagliando, o prima per chi fa molti chilometri (stima dai chilometri segnati alle visite). Propone solo giorni che non avete segnato come pieni.", msg: [
         ["a", "Buongiorno, per la sua " + modello + " (" + targa + ") si avvicina il tagliando: l'ultimo l'abbiamo fatto a " +
           MESI[mese] + " " + (anno - 1) + ".\nVuole fissare il prossimo? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
       { nome: "Revisione in scadenza", quando: "Parte da sola un mese prima della scadenza.", msg: [
@@ -420,7 +421,7 @@ function scenari() {
       { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
         ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
           " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
-      { nome: "Recensione", quando: "Parte da sola il giorno dopo il ritiro, una volta sola per cliente.", msg: [
+      { nome: "Recensione", quando: "Parte il giorno dopo che segnate il lavoro come finito (un tocco), una volta sola per cliente.", msg: [
         ["a", "Buongiorno, grazie per averci scelto. Se è tutto a posto con l'auto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
     ].filter((s) => C.revisioni !== false || !s.nome.startsWith("Revisione"));
   }
@@ -481,12 +482,12 @@ $("prima").innerHTML = righe([
   [sp.foto >= 10, sp.foto + " foto"],
   [sp.link, sp.link ? "Link al sito" : "Nessun link al sito o ai social"],
   [false, "Risposte alle recensioni: " + sp.risposte],
-]);
+].filter(([ok, testo]) => !sp.rivendicata || !testo.startsWith("Risposte")));
 // Solo quello che cambia davvero rispetto a oggi.
 $("dopo").innerHTML = righe([
   [!sp.rivendicata, "Rivendicata e gestita da voi, gratis"], [!sp.orari, "Orari e giorni di chiusura aggiornati"],
   [sp.foto < 10, "Foto recenti dei lavori"], [!sp.link, "Link al sito"],
-  [true, OFFICINA ? "Link alla richiesta di appuntamento" : "Link alla prenotazione online"], [true, "Risposte alle recensioni"],
+  [true, OFFICINA ? "Link alla richiesta di appuntamento" : "Link alla prenotazione online"], [!sp.rivendicata, "Potete rispondere alle recensioni"],
 ].filter(([cambia]) => cambia));
 
 // --- Cosa cambia ---
