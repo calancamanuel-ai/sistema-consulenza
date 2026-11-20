@@ -42,6 +42,16 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
    nome di persona. La scritta "Esempio preparato per <attività>, non è il loro sito" resta visibile.
    Controllo con Playwright (390 px e 1280 px, nessun errore in console), poi il file HTML va nella
    cartella Drive. La demo non si pubblica online: porta nome e marchio di un'attività reale.
-5. **Nota nel foglio.** `python scripts/attivita.py nota PLACE_ID "Fase 3: materiale pronto, <link>"`.
+5. **Revisione dei testi**, prima di consegnare, con le skill di marketing se ci sono:
+   - `copywriting-kit:copy-proof-check`: ogni affermazione della scheda e di "Cosa dire" va confrontata
+     con i dati raccolti (foglio, scheda Google, social, sito, bilancio). Quello che i dati non dicono
+     si toglie o si restringe: per esempio "nessuna risposta nelle ultime 10 recensioni", non "le
+     recensioni restano senza risposta".
+   - Come lavora oggi l'attività (chi telefona, come avvisa, come richiama i clienti) non si dà per
+     scontato: o è verificato, o diventa un "se oggi..." oppure una domanda da fare al titolare.
+   - `cold-email:cold-email-hooks` per l'apertura: un fatto vero, recente e datato legato all'offerta
+     (una promozione in corso, un dettaglio delle recensioni), non un complimento generico.
+   - `copywriting-kit:copy-edit` per la forma: frasi semplici, niente superlativi né parole vuote.
+6. **Nota nel foglio.** `python scripts/attivita.py nota PLACE_ID "Fase 3: materiale pronto, <link>"`.
 
 La prima attività si mostra a Manuel prima di preparare le altre.
