@@ -25,7 +25,7 @@ const CONFIG = {
     { nome: "Colore", durata: 90, prezzo: "da 45 €" },
   ],
   nota_servizi: "Durate indicative: il centro le adatta ai suoi tempi.",
-  veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" },   // solo officina: esempio precompilato
+  veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" }, revisioni: true,  // solo officina: auto d'esempio; false se le revisioni le fanno fuori
   nota_chiusura: "Ferie, corsi, ponti: un tocco e quel giorno nessuno può prenotare.",
   richiamo_settimane: 6,        // bellezza: dopo quanto si scrive a chi non torna
   automazioni: [
@@ -423,7 +423,7 @@ function scenari() {
         ["c", "Sì, meglio di mattina"], ["a", "Va bene: la chiamiamo per fissare una mattina." + firma]] },
       { nome: "Recensione", quando: "Parte da sola il giorno dopo il ritiro dell'auto.", msg: [
         ["a", "Buongiorno, grazie per averci scelto. Se è tutto a posto con l'auto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
-    ];
+    ].filter((s) => C.revisioni !== false || !s.nome.startsWith("Revisione"));
   }
   const [a, b] = proposte(p);
   return [
