@@ -113,7 +113,7 @@ const CONFIG = {
       <label><span id="l-campo1"></span> <input id="campo1" autocomplete="off"></label>
       <label><span id="l-campo2"></span> <input id="campo2" autocomplete="off"></label>
     </div>
-    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label>
+    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label> <label class="nota" id="l-richiamo"><input type="checkbox" id="richiamo"> Accetto anche un messaggio se non torno da qualche settimana.</label>
     <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
@@ -250,7 +250,7 @@ $("prenota").textContent = OFFICINA ? "Invia la richiesta" : "Conferma la prenot
 $("nota-servizi").textContent = C.nota_servizi || "";
 [$("p-dati").textContent, $("l-campo1").textContent, $("campo1").placeholder, $("l-campo2").textContent, $("campo2").placeholder] =
   OFFICINA ? ["La sua auto", "Modello", C.veicolo.modello, "Targa", C.veicolo.targa] : ["I suoi dati", "Nome", "Nome e cognome", "Telefono", "333 000 0000"];
-$("l-consenso").textContent = OFFICINA ? "Accetto di ricevere su WhatsApp i messaggi sulle scadenze della mia auto."
+$("l-richiamo").hidden = OFFICINA; $("l-consenso").textContent = OFFICINA ? "Accetto di ricevere su WhatsApp i messaggi sulle scadenze della mia auto."
   : "Accetto di ricevere i promemoria degli appuntamenti.";
 
 C.servizi.forEach((s) => {
@@ -315,6 +315,7 @@ $("prenota").onclick = () => {
   prenotazione = { inizio: scelta.ora, durata: OFFICINA ? 30 : scelta.servizio.durata, nome: scelta.servizio.nome,
                    giorno: scelta.giorno, fonte: "online", nuovo: true, daConfermare: OFFICINA };
   if (OFFICINA) prenotazione.auto = auto(); else prenotazione.cliente = $("campo1").value.trim();
+  prenotazione.consenso = $("consenso").checked;
   $("conferma").hidden = false;
   $("conferma").textContent = OFFICINA
     ? "Richiesta inviata: " + prenotazione.nome + ", " + data(scelta.giorno) + ". La trova nell'agenda qui sotto, da confermare."
@@ -323,7 +324,7 @@ $("prenota").onclick = () => {
   mostraOre();
   const b = $("giorni-agenda").querySelector('[data-giorno="' + scelta.giorno.toDateString() + '"]');
   if (b) b.click();
-  if (!OFFICINA) scenario(0);  // l'officina manda il messaggio solo quando conferma
+  if (!OFFICINA && prenotazione.consenso) scenario(0);  // l'officina scrive solo quando conferma; senza consenso niente promemoria
 };
 
 // --- 2. Agenda del titolare ---
@@ -331,7 +332,7 @@ let giornoAgenda = giorni[0];
 $("t-agenda").textContent = OFFICINA ? "2. Le richieste online" : "2. La vostra agenda";
 $("s-agenda").textContent = OFFICINA
   ? "Qui arrivano solo le richieste fatte online, e per ognuna vi arriva anche un messaggio su WhatsApp. La vostra agenda di sempre resta com'è: confermate con un tocco. I giorni che segnate come pieni non vengono proposti."
-  : "Gli appuntamenti online entrano da soli; quelli presi al telefono si segnano in tre tocchi. Se preferite l'agenda di carta, si aprono online solo le fasce che decidete voi.";
+  : "Gli appuntamenti online entrano da soli; quelli presi al telefono si segnano in pochi tocchi. Se preferite l'agenda di carta, si aprono online solo le fasce che decidete voi.";
 $("s-wa").textContent = C.canale_messaggi;
 $("nota-chiusura").textContent = C.nota_chiusura || "";
 bottoniGiorni($("giorni-agenda"), (g) => { giornoAgenda = g; mostraAgenda(); });
@@ -362,7 +363,7 @@ $("chiudi").onclick = () => {
   if (chiusi.has(k)) chiusi.delete(k); else chiusi.add(k);
   mostraAgenda(); aggiornaChiusi();
 };
-// Bellezza: appuntamento preso al telefono in tre tocchi (servizio, orario, Segna).
+// Bellezza: appuntamento preso al telefono in pochi tocchi (servizio, orario, Segna).
 function mostraSegna() {
   if (OFFICINA) return;
   $("segna").hidden = $("segna-bottone").hidden = chiusi.has(giornoAgenda.toDateString());
@@ -380,7 +381,7 @@ mostraAgenda();
 
 // --- 3. WhatsApp ---
 function attuale() {
-  if (prenotazione) return prenotazione;
+  if (prenotazione && (OFFICINA || prenotazione.consenso)) return prenotazione;
   const g = giorni.find((d) => !OFFICINA || fasce().some((f) => !fasciaPiena(d, f))) || giorni[0], s = C.servizi[0];
   const m = OFFICINA ? (fasce().find((f) => !fasciaPiena(g, f)) || fasce()[0]).inizio : (orariLiberi(g, s.durata)[0] ?? AP);
   return { inizio: m, durata: s.durata, nome: s.nome, giorno: g, auto: OFFICINA ? [C.veicolo.modello, C.veicolo.targa] : null };
