@@ -40,7 +40,7 @@ const CONFIG = {
 <style>
   :root {
     --colore: #7a4b8c; --testata: #2b2830; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8; --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46; --attesa: #9a6700; }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; } [hidden] { display: none !important; }
   body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--testo); background: var(--sfondo); }
   .avviso { background: #2b2830; color: #fff; text-align: center; font-size: 13px; padding: 8px 16px; }
   header { background: var(--testata); color: #fff; padding: 28px 16px 24px; text-align: center; }
@@ -319,11 +319,11 @@ $("prenota").onclick = () => {
   $("conferma").textContent = OFFICINA
     ? "Richiesta inviata: " + prenotazione.nome + ", " + data(scelta.giorno) + ". La trova nell'agenda qui sotto, da confermare."
     : "Prenotazione registrata: " + prenotazione.nome + ", " + data(scelta.giorno) + " alle " + hhmm(scelta.ora) +
-      ". È già nell'agenda qui sotto; il giorno prima parte il promemoria.";
+      ". È già nell'agenda qui sotto" + ($("consenso").checked ? "; il giorno prima parte il promemoria." : ". Senza consenso non riceve promemoria.");
   mostraOre();
   const b = $("giorni-agenda").querySelector('[data-giorno="' + scelta.giorno.toDateString() + '"]');
   if (b) b.click();
-  scenario(0);
+  if (!OFFICINA) scenario(0);  // l'officina manda il messaggio solo quando conferma
 };
 
 // --- 2. Agenda del titolare ---
@@ -381,8 +381,8 @@ mostraAgenda();
 // --- 3. WhatsApp ---
 function attuale() {
   if (prenotazione) return prenotazione;
-  const g = giorni[0], s = C.servizi[0];
-  const m = OFFICINA ? AP : (orariLiberi(g, s.durata)[0] ?? AP);
+  const g = giorni.find((d) => !OFFICINA || fasce().some((f) => !fasciaPiena(d, f))) || giorni[0], s = C.servizi[0];
+  const m = OFFICINA ? (fasce().find((f) => !fasciaPiena(g, f)) || fasce()[0]).inizio : (orariLiberi(g, s.durata)[0] ?? AP);
   return { inizio: m, durata: s.durata, nome: s.nome, giorno: g, auto: OFFICINA ? [C.veicolo.modello, C.veicolo.targa] : null };
 }
 // I primi due orari liberi nei giorni dopo quello indicato (per spostare un appuntamento o fissarne uno).
@@ -440,7 +440,7 @@ function scenari() {
       ["a", "Fatto: appuntamento spostato a " + (b || "un altro giorno") + ". L'orario di prima torna libero per altre clienti." + firma]] },
     { nome: "Dopo la prima visita", quando: "Parte da solo la sera, solo dopo la prima visita di una cliente nuova.", msg: [
       ["a", "Buonasera, grazie della prima visita da noi. Se il trattamento le è piaciuto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
-    { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti.", msg: [
+    { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti, solo a chi ha accettato anche questi messaggi.", msg: [
       ["a", "Buongiorno, sono passate " + C.richiamo_settimane + " settimane dall'ultimo appuntamento (" + p.nome +
         ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] },
   ];
@@ -467,7 +467,7 @@ scenari().forEach((s, i) => {
   b.onclick = () => scenario(i);
   $("scenari").append(b);
 });
-scenario(0);
+scenario(OFFICINA ? 1 : 0);  // officina: si parte dal promemoria del tagliando
 
 // --- 4. Scheda Google ---
 function righe(voci) {

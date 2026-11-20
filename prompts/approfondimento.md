@@ -52,7 +52,15 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
      fatto concreto e una domanda sul loro lavoro, poi una riga su cosa fa Manuel, senza far intendere
      clienti o lavori che non ha. Si propone un solo incontro: la mezz'ora di analisi gratuita, dove si
      mostra la demo. Non si propone quello che l'attività fa già (per esempio l'avviso "auto pronta"
-     se lo mandano a mano su WhatsApp): se non si sa, si chiede. In fondo, "Se non rispondono": due contatti, dopo
+     se lo mandano a mano su WhatsApp): se non si sa, si chiede.
+     Al telefono si chiede solo una visita di cinque minuti, con una cosa gratuita da portare (per
+     esempio i passi per rivendicare la scheda Google); la mezz'ora di analisi si propone dopo. Orari
+     di chiamata lontani dai momenti pieni (apertura, chiusura, stagione delle gomme).
+     Niente promesse tecniche non verificate: SMS a cui si risponde solo da un numero dedicato, stesso
+     numero WhatsApp su telefono e sistema solo con WhatsApp Business (da verificare), scadenze a
+     chilometri solo come stima, consenso necessario anche per i clienti già in archivio. Quando si
+     dice un prezzo si dicono anche i costi fissi (assistenza, messaggi) e che il preventivo riporta il
+     totale del primo anno. Le risposte che dipendono da decisioni di Manuel portano una nota per lui. In fondo, "Se non rispondono": due contatti, dopo
      una settimana e dopo altre due, ognuno con un motivo nuovo (un consiglio gratuito e concreto, poi
      una chiusura senza insistere); mai un "volevo solo risentirvi".
 4. **Demo.** Copia di `demo/demo.html` con il blocco `CONFIG` compilato per l'attività: nome,
