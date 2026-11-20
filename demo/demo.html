@@ -29,6 +29,7 @@ const CONFIG = {
   nota_chiusura: "Ferie, corsi, ponti: un tocco e quel giorno nessuno può prenotare.",
   canale_messaggi: "Partono dal vostro numero WhatsApp. Se un cliente risponde con altro, il messaggio arriva a voi come sempre.",
   richiamo_settimane: 6,        // bellezza: dopo quanto si scrive a chi non torna
+  promozione: "",               // bellezza: testo di una promozione in corso, mandata solo a chi l'ha accettato
   automazioni: [
     "Prenotazione online sul sito, anche di sera",
     "Promemoria su WhatsApp il giorno prima, con conferma o spostamento in un tocco",
@@ -113,7 +114,7 @@ const CONFIG = {
       <label><span id="l-campo1"></span> <input id="campo1" autocomplete="off"></label>
       <label><span id="l-campo2"></span> <input id="campo2" autocomplete="off"></label>
     </div>
-    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label> <label class="nota" id="l-richiamo"><input type="checkbox" id="richiamo"> Accetto anche un messaggio se non torno da qualche settimana.</label>
+    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label> <label class="nota" id="l-richiamo"><input type="checkbox" id="richiamo"> Accetto anche altri messaggi del centro: promozioni, richiamo se non torno da qualche settimana, richiesta di recensione.</label>
     <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
@@ -401,6 +402,9 @@ function proposte(p) {
 function scenari() {
   const p = attuale(), quando = data(p.giorno) + " alle " + hhmm(p.inizio);
   const firma = "\n" + C.attivita;
+  // Recensione: si chiede di persona con il cartoncino; il messaggio è solo una riserva se ve ne dimenticate.
+  const recensione = { nome: "Recensione (riserva)", quando: "La recensione la chiedete voi di persona, con il cartoncino al bancone. Se ve ne dimenticate, il giorno dopo l'appuntamento parte questo messaggio, una volta sola per cliente e solo a chi ha accettato i messaggi; con un tocco potete non mandarlo.",
+    msg: [["a", "Buongiorno, grazie della visita di ieri. Se è tutto a posto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] };
   if (OFFICINA) {
     const [modello, targa] = p.auto || [C.veicolo.modello, C.veicolo.targa];
     const anno = new Date().getFullYear(), mese = new Date().getMonth();
@@ -421,29 +425,24 @@ function scenari() {
           (C.revisione_extra ? " " + C.revisione_extra : "") + "\nVuole fissare un giorno? Risponda SÌ e le proponiamo due date." + firma], ...fissa] },
       { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
         ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
-          " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
-      { nome: "Recensione", quando: "Parte il giorno dopo che segnate il lavoro come finito (un tocco), una volta sola per cliente.", msg: [
-        ["a", "Buongiorno, grazie per averci scelto. Se è tutto a posto con l'auto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
+          " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] }, recensione,
     ].filter((s) => C.revisioni !== false || !s.nome.startsWith("Revisione"));
   }
   const [a, b] = proposte(p);
   return [
-    { nome: "Promemoria", quando: "Parte da solo il giorno prima, alle 18.", msg: [
-      ["a", "Buonasera, le ricordiamo l'appuntamento di domani, " + quando + ".\nServizio: " + p.nome +
+    { nome: "Promemoria", quando: "Parte da solo il giorno prima, alle 18.", msg: [["a", "Buonasera, le ricordiamo l'appuntamento di domani, " + quando + ".\nServizio: " + p.nome +
         "\nRisponda 1 per confermare o 2 per spostarlo." + firma],
       ["c", "1"], ["a", "Grazie, la aspettiamo domani." + firma]] },
     { nome: "Se risponde 2", quando: "Il sistema propone i primi orari liberi in agenda.", msg: [
       ["a", "Buonasera, le ricordiamo l'appuntamento di domani, " + quando + ".\nRisponda 1 per confermare o 2 per spostarlo." + firma],
-      ["c", "2"],
-      ["a", "Nessun problema. Questi sono i primi orari liberi:\nA) " + (a || "da concordare") + "\nB) " + (b || "da concordare") +
+      ["c", "2"], ["a", "Nessun problema. Questi sono i primi orari liberi:\nA) " + (a || "da concordare") + "\nB) " + (b || "da concordare") +
         "\nRisponda A o B, oppure ci chiami." + firma],
-      ["c", "B"],
-      ["a", "Fatto: appuntamento spostato a " + (b || "un altro giorno") + ". L'orario di prima torna libero per altre clienti." + firma]] },
-    { nome: "Dopo la prima visita", quando: "Parte da solo la sera, solo dopo la prima visita di una cliente nuova.", msg: [
-      ["a", "Buonasera, grazie della prima visita da noi. Se il trattamento le è piaciuto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
-    { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti, solo a chi ha accettato anche questi messaggi.", msg: [
+      ["c", "B"], ["a", "Fatto: appuntamento spostato a " + (b || "un altro giorno") + ". L'orario di prima torna libero per altre clienti." + firma]] },
+    ...(C.promozione ? [{ nome: "Promozione", quando: "La mandate voi quando lanciate una promozione, solo a chi ha accettato questi messaggi.", msg: [
+      ["a", "Buongiorno, " + C.promozione + "\nPer prenotare, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] }] : []),
+    { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti, solo a chi ha accettato questi messaggi.", msg: [
       ["a", "Buongiorno, sono passate " + C.richiamo_settimane + " settimane dall'ultimo appuntamento (" + p.nome +
-        ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] },
+        ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] }, recensione,
   ];
 }
 
@@ -489,6 +488,7 @@ $("dopo").innerHTML = righe([
   [!sp.rivendicata, "Rivendicata e gestita da voi, gratis"], [!sp.orari, "Orari e giorni di chiusura aggiornati"],
   [sp.foto < 10, "Foto recenti dei lavori"], [!sp.link, "Link al sito"],
   [true, OFFICINA ? "Link alla richiesta di appuntamento" : "Link alla prenotazione online"], [!sp.rivendicata, "Potete rispondere alle recensioni"],
+  [true, "Cartoncino al bancone con QR e NFC: la recensione la chiedete voi, di persona (con un messaggio di riserva)"],
 ].filter(([cambia]) => cambia));
 
 // --- Cosa cambia ---
