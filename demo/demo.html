@@ -7,116 +7,156 @@
 <script>
 // Configurazione dell'attività: è l'unica parte da cambiare per ogni copia della demo.
 // Nessun nome di persona: solo dati dell'attività. settore: "bellezza" oppure "officina".
+// logo e foto: indirizzi di immagini (nelle copie si incorporano come data:image/jpeg;base64,...).
 const CONFIG = {
   attivita: "Salone Esempio",
   settore: "bellezza",
   citta: "San Giovanni in Persiceto",
-  colore: "#7a4b8c",
-  giorni_chiusi: [0, 1],          // 0 = domenica, 1 = lunedì...
+  colore: "#7a4b8c",            // colore dei bottoni
+  testata: "#2b2830",           // sfondo della testata, intonato al logo
+  logo: "",
+  foto: [],                     // al massimo due foto dei lavori (senza volti)
+  giorni_chiusi: [0, 1],        // 0 = domenica, 1 = lunedì...
   apertura: "09:00",
   chiusura: "19:00",
+  pausa: null,                  // per esempio ["12:30", "14:30"]
   servizi: [
     { nome: "Taglio e piega", durata: 45, prezzo: "da 30 €" },
     { nome: "Colore", durata: 90, prezzo: "da 45 €" },
-    { nome: "Piega", durata: 30, prezzo: "da 18 €" },
   ],
+  nota_servizi: "Durate indicative: il centro le adatta ai suoi tempi.",
+  veicolo: { modello: "Fiat Panda", targa: "AB 123 CD" },   // solo officina: esempio precompilato
+  nota_chiusura: "Ferie, corsi, ponti: un tocco e quel giorno nessuno può prenotare.",
+  richiamo_settimane: 6,        // bellezza: dopo quanto si scrive a chi non torna
   automazioni: [
     "Prenotazione online sul sito, anche di sera",
-    "Promemoria su WhatsApp il giorno prima, con conferma in un tocco",
-    "Richiamo dei clienti che non tornano da tempo",
+    "Promemoria su WhatsApp il giorno prima, con conferma o spostamento in un tocco",
   ],
-  tempo_risparmiato: "circa 3 ore a settimana di telefonate e messaggi",
-  scheda_prima: { foto: 3, orari: false, link: false, risposte: "0 delle ultime 10" },
+  risultato: "Meno telefonate durante il lavoro e meno appuntamenti saltati.",
+  scheda_prima: { rivendicata: true, foto: 3, orari: true, link: false, risposte: "0 delle ultime 10" },
 };
 </script>
 <style>
   :root {
-    --colore: #7a4b8c; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8;
-    --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46;
+    --colore: #7a4b8c; --testata: #2b2830; --testo: #1f1d24; --tenue: #6b6775; --sfondo: #f6f4f8;
+    --carta: #ffffff; --bordo: #e4e0ea; --wa: #e7f8dc; --wa-sfondo: #efe9e1; --ok: #1d7a46; --attesa: #9a6700;
   }
   * { box-sizing: border-box; }
   body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
          color: var(--testo); background: var(--sfondo); }
   .avviso { background: #2b2830; color: #fff; text-align: center; font-size: 13px; padding: 8px 16px; }
-  header { background: var(--colore); color: #fff; padding: 40px 16px 32px; text-align: center; }
-  header h1 { margin: 0 0 4px; font-size: 28px; line-height: 1.2; }
-  header p { margin: 0; opacity: .85; }
+  header { background: var(--testata); color: #fff; padding: 28px 16px 24px; text-align: center; }
+  header img.logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; display: block;
+                    margin: 0 auto 12px; border: 2px solid rgba(255,255,255,.25); }
+  header h1 { margin: 0 0 4px; font-size: 28px; line-height: 1.2; } header p { margin: 0; opacity: .85; }
+  .foto { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px;
+          max-width: 720px; margin: 20px auto 0; }
+  .foto img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: block; }
   main { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
   section { background: var(--carta); border: 1px solid var(--bordo); border-radius: 16px;
-            padding: 20px 16px; margin-top: 20px; }
-  h2 { margin: 0 0 4px; font-size: 20px; }
-  .sotto { margin: 0 0 16px; color: var(--tenue); font-size: 14px; }
+            padding: 20px 16px; margin-top: 20px; } h2 { margin: 0 0 4px; font-size: 20px; }
+  .sotto { margin: 0 0 16px; color: var(--tenue); font-size: 14px; } .nota { margin: 8px 0 0; color: var(--tenue); font-size: 13px; }
   .scelte { display: grid; gap: 8px; }
   .scelta { display: flex; justify-content: space-between; gap: 12px; width: 100%; text-align: left;
             padding: 12px 14px; border: 1px solid var(--bordo); border-radius: 12px; background: #fff;
-            font: inherit; cursor: pointer; }
-  .scelta small { color: var(--tenue); white-space: nowrap; }
-  .scelta[aria-pressed="true"] { border-color: var(--colore); box-shadow: 0 0 0 2px var(--colore) inset; }
+            font: inherit; cursor: pointer; color: inherit; }
+  .scelta small { color: var(--tenue); text-align: right; } .scelta[aria-pressed="true"] { border-color: var(--colore); box-shadow: 0 0 0 2px var(--colore) inset; }
   .giorni { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .giorno { flex: 0 0 auto; width: 64px; padding: 8px 4px; text-align: center; border: 1px solid var(--bordo);
-            border-radius: 12px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
-  .giorno b { display: block; font-size: 18px; }
-  .giorno[aria-pressed="true"], .ora[aria-pressed="true"] { background: var(--colore); color: #fff; border-color: var(--colore); }
-  .ore { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 12px; }
-  .ora { padding: 8px 0; border: 1px solid var(--bordo); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; }
+            border-radius: 12px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; color: inherit; }
+  .giorno b { display: block; font-size: 18px; } .giorno:disabled { color: #b9b4c2; cursor: default; background: #f1eff4; }
+  .giorno[aria-pressed="true"], .ora[aria-pressed="true"], .chip[aria-pressed="true"] {
+    background: var(--colore); color: #fff; border-color: var(--colore); }
+  .ore { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; } .ore.larghe { grid-template-columns: 1fr; }
+  .ora { padding: 8px 6px; border: 1px solid var(--bordo); border-radius: 10px; background: #fff;
+         font: inherit; cursor: pointer; color: inherit; }
   .ora:disabled { color: #b9b4c2; text-decoration: line-through; cursor: default; }
+  .vuoto { color: var(--tenue); font-size: 14px; }
   .passo { margin: 16px 0 8px; font-weight: 600; font-size: 14px; }
+  .campi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .campi label { font-size: 13px; color: var(--tenue); }
+  .campi input { display: block; width: 100%; margin-top: 4px; padding: 10px; font: inherit;
+                 border: 1px solid var(--bordo); border-radius: 10px; }
   .bottone { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 12px;
              background: var(--colore); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
-  .bottone:disabled { opacity: .4; cursor: default; }
-  .bottone.chiaro { background: #fff; color: var(--colore); border: 1px solid var(--colore); }
+  .bottone:disabled { opacity: .4; cursor: default; } .bottone.chiaro { background: #fff; color: var(--colore); border: 1px solid var(--colore); }
   .conferma { margin-top: 16px; padding: 14px; border-radius: 12px; background: #eaf6ef; color: var(--ok); }
-  .chat { background: var(--wa-sfondo); border-radius: 12px; padding: 12px; min-height: 120px;
+  .agenda { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+  .agenda li { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: center;
+               padding: 10px 12px; border: 1px solid var(--bordo); border-radius: 12px; font-size: 15px; }
+  .agenda li.nuovo { border-color: var(--colore); box-shadow: 0 0 0 1px var(--colore) inset; }
+  .agenda .fonte { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: #f1eff4; color: var(--tenue); }
+  .agenda .fonte.attesa { background: #fff4d6; color: var(--attesa); }
+  .agenda button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 0;
+                   background: var(--colore); color: #fff; cursor: pointer; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip { padding: 8px 12px; border: 1px solid var(--bordo); border-radius: 99px; background: #fff;
+          font: inherit; font-size: 14px; cursor: pointer; color: inherit; }
+  .quando { font-size: 13px; color: var(--tenue); margin: 0 0 8px; }
+  .chat { background: var(--wa-sfondo); border-radius: 12px; padding: 12px; min-height: 160px;
           display: flex; flex-direction: column; gap: 8px; }
-  .chat-testa { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--tenue); }
   .msg { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; background: #fff;
          box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; animation: entra .25s ease-out; }
-  .msg.cliente { align-self: flex-end; background: var(--wa); }
-  .msg time { display: block; text-align: right; font-size: 11px; color: var(--tenue); }
+  .msg.cliente { align-self: flex-end; background: var(--wa); } .msg time { display: block; text-align: right; font-size: 11px; color: var(--tenue); }
   @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .msg { animation: none; } }
   .schede { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 520px) { .schede { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .schede, .campi { grid-template-columns: 1fr; } .foto img { height: 140px; } }
   .scheda { border: 1px solid var(--bordo); border-radius: 12px; padding: 12px; font-size: 14px; }
-  .scheda h3 { margin: 0 0 8px; font-size: 15px; }
-  .riga { display: flex; gap: 8px; padding: 4px 0; }
+  .scheda h3 { margin: 0 0 8px; font-size: 15px; } .riga { display: flex; gap: 8px; padding: 4px 0; }
   .no { color: #b3261e; } .si { color: var(--ok); }
-  ul.lista { margin: 0; padding-left: 20px; } ul.lista li { margin: 6px 0; }
-  .tempo { margin-top: 12px; font-weight: 600; }
+  ul.lista { margin: 0; padding-left: 20px; } ul.lista li { margin: 6px 0; } .tempo { margin-top: 12px; font-weight: 600; }
   footer { text-align: center; color: var(--tenue); font-size: 13px; padding: 24px 16px; }
 </style>
 </head>
 <body>
 <div class="avviso" id="avviso"></div>
 <header>
+  <img class="logo" id="logo" alt="" hidden>
   <h1 id="titolo"></h1>
   <p id="sottotitolo"></p>
+  <div class="foto" id="foto"></div>
 </header>
 <main>
   <section aria-labelledby="t-prenota">
-    <h2 id="t-prenota">1. Prenotazione online</h2>
+    <h2 id="t-prenota"></h2>
     <p class="sotto" id="s-prenota"></p>
-    <div class="passo">Servizio</div>
+    <div class="passo" id="p-servizio"></div>
     <div class="scelte" id="servizi"></div>
+    <p class="nota" id="nota-servizi"></p>
     <div class="passo">Giorno</div>
     <div class="giorni" id="giorni"></div>
-    <div class="passo">Orario</div>
-    <div class="ore" id="ore"></div>
-    <button class="bottone" id="prenota" disabled>Conferma la prenotazione</button>
+    <div class="passo" id="p-ora"></div>
+    <div class="ore" id="ore"><span class="vuoto">Scelga prima servizio e giorno.</span></div>
+    <div id="dati-auto" hidden>
+      <div class="passo">La sua auto</div>
+      <div class="campi">
+        <label>Modello <input id="modello" autocomplete="off"></label>
+        <label>Targa <input id="targa" autocomplete="off"></label>
+      </div>
+    </div>
+    <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
 
+  <section aria-labelledby="t-agenda">
+    <h2 id="t-agenda">2. La vostra agenda</h2>
+    <p class="sotto" id="s-agenda"></p>
+    <div class="giorni" id="giorni-agenda"></div>
+    <ul class="agenda" id="agenda"></ul>
+    <button class="bottone chiaro" id="chiudi"></button>
+    <p class="nota" id="nota-chiusura"></p>
+  </section>
+
   <section aria-labelledby="t-wa">
-    <h2 id="t-wa">2. Messaggi automatici su WhatsApp</h2>
-    <p class="sotto">Partono da soli al momento giusto: nessuno deve ricordarsi di scriverli.</p>
-    <div class="chat" id="chat" aria-live="polite">
-      <div class="chat-testa" id="chat-testa"></div>
-    </div>
-    <button class="bottone chiaro" id="avanti">Mostra il messaggio successivo</button>
+    <h2 id="t-wa">3. Messaggi su WhatsApp che partono da soli</h2>
+    <p class="sotto">Nessuno deve ricordarsi di scriverli. Chi non ha WhatsApp può ricevere un SMS con lo stesso testo.</p>
+    <div class="chips" id="scenari"></div>
+    <p class="quando" id="quando"></p>
+    <div class="chat" id="chat" aria-live="polite"></div>
   </section>
 
   <section aria-labelledby="t-scheda">
-    <h2 id="t-scheda">3. La scheda su Google Maps</h2>
+    <h2 id="t-scheda">4. La scheda su Google Maps</h2>
     <p class="sotto">È la prima cosa che vede chi cerca l'attività in zona.</p>
     <div class="schede">
       <div class="scheda"><h3>Oggi</h3><div id="prima"></div></div>
@@ -127,153 +167,333 @@ const CONFIG = {
   <section aria-labelledby="t-cambia">
     <h2 id="t-cambia">Cosa cambia</h2>
     <ul class="lista" id="automazioni"></ul>
-    <p class="tempo" id="tempo"></p>
+    <p class="tempo" id="risultato"></p>
   </section>
 </main>
-<footer id="piede"></footer>
+<footer>Demo dimostrativa: prenotazioni, agenda e messaggi sono simulati, nessun dato viene salvato o inviato.</footer>
 
 <script>
 const C = CONFIG;
 const OFFICINA = C.settore === "officina";
 const $ = (id) => document.getElementById(id);
 const GIORNI = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+const GIORNI_LUNGHI = ["domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"];
 const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
               "settembre", "ottobre", "novembre", "dicembre"];
-document.documentElement.style.setProperty("--colore", C.colore);
-document.title = "Demo per " + C.attivita;
+const AUTO_FINTE = [["Renault Clio", "CD 456 EF"], ["Dacia Sandero", "EF 789 GH"], ["Ford Fiesta", "GH 012 IL"]];
 
-$("avviso").textContent = "Esempio preparato per " + C.attivita + ", non è il loro sito: nessun dato viene inviato.";
-$("titolo").textContent = C.attivita;
-$("sottotitolo").textContent = (OFFICINA ? "Officina a " : "") + C.citta;
-$("s-prenota").textContent = OFFICINA
-  ? "Il cliente sceglie il lavoro e l'orario di consegna dell'auto, a qualsiasi ora: niente telefonate in officina."
-  : "Il cliente sceglie servizio, giorno e ora da solo, anche la sera: niente telefonate durante il lavoro.";
-$("piede").textContent = "Demo dimostrativa: i messaggi e la prenotazione sono simulati.";
-
-// --- Prenotazione ---
-const scelta = { servizio: null, giorno: null, ora: null };
-
-function minuti(hhmm) { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; }
-function hhmm(min) { return String(Math.floor(min / 60)).padStart(2, "0") + ":" + String(min % 60).padStart(2, "0"); }
-function occupato(data, min) { return (data.getDate() * 7 + min / 30) % 5 === 0; } // finto ma stabile
-
+function minuti(t) { const [h, m] = t.split(":").map(Number); return h * 60 + m; }
+function hhmm(min) { return Math.floor(min / 60) + ":" + String(min % 60).padStart(2, "0"); }
+function data(g) { return GIORNI_LUNGHI[g.getDay()] + " " + g.getDate() + " " + MESI[g.getMonth()]; }
+function stessoGiorno(a, b) { return a && b && a.toDateString() === b.toDateString(); }
+function crea(tag, classe, testo) {
+  const el = document.createElement(tag);
+  if (classe) el.className = classe;
+  if (testo !== undefined) el.textContent = testo;
+  return el;
+}
 function premi(contenitore, bottone) {
   contenitore.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === bottone)));
 }
 
+const AP = minuti(C.apertura), CH = minuti(C.chiusura);
+const PAUSA = C.pausa ? C.pausa.map(minuti) : null;
+
+// --- Testata ---
+document.documentElement.style.setProperty("--colore", C.colore);
+document.documentElement.style.setProperty("--testata", C.testata);
+document.title = "Demo per " + C.attivita;
+$("avviso").textContent = "Esempio preparato per " + C.attivita + ", non è il loro sito: nessun dato viene inviato.";
+$("titolo").textContent = C.attivita;
+$("sottotitolo").textContent = (OFFICINA ? "Officina a " : "") + C.citta;
+if (C.logo) { $("logo").src = C.logo; $("logo").alt = "Logo di " + C.attivita; $("logo").hidden = false; }
+C.foto.slice(0, 2).forEach((src) => { const i = crea("img"); i.src = src; i.alt = "Foto dai social di " + C.attivita; $("foto").append(i); });
+
+// --- Giorni e appuntamenti già presi (finti ma stabili) ---
+const giorni = [];
+for (let i = 1; giorni.length < 7 && i < 21; i++) {
+  const n = new Date(); const g = new Date(n.getFullYear(), n.getMonth(), n.getDate() + i);
+  if (!C.giorni_chiusi.includes(g.getDay())) giorni.push(g);
+}
+const chiusi = new Set();   // giorni chiusi dal titolare nella demo
+
+function giaPresi(g) {
+  const s = g.getDate();
+  if (OFFICINA) return [0, 1, 2].slice(0, 1 + (s % 3)).map((k) => ({
+    inizio: k === 1 && PAUSA ? PAUSA[1] : AP + k * 30, durata: 30,
+    nome: C.servizi[(s + k) % C.servizi.length].nome, auto: AUTO_FINTE[(s + k) % 3], fonte: "telefono" }));
+  return [1 + (s % 4), 7 + (s % 3), 13 + (s % 2)].map((k, i) => {
+    const sv = C.servizi[(s + i) % C.servizi.length];
+    return { inizio: AP + k * 30, durata: sv.durata, nome: sv.nome, fonte: i === 1 ? "WhatsApp" : "telefono" };
+  }).filter((a) => libero(a.inizio, a.durata, []));
+}
+
+function sovrappone(a1, d1, a2, d2) { return a1 < a2 + d2 && a2 < a1 + d1; }
+function libero(inizio, durata, presi) {
+  if (inizio < AP || inizio + durata > CH) return false;
+  if (PAUSA && sovrappone(inizio, durata, PAUSA[0], PAUSA[1] - PAUSA[0])) return false;
+  return !presi.some((p) => sovrappone(inizio, durata, p.inizio, p.durata));
+}
+function appuntamenti(g) {
+  const lista = giaPresi(g);
+  if (prenotazione && stessoGiorno(prenotazione.giorno, g)) lista.push(prenotazione);
+  return lista.sort((a, b) => a.inizio - b.inizio);
+}
+// Orari in cui il servizio ci sta tutto: dentro l'orario, fuori dalla pausa, senza sovrapposizioni.
+function orariLiberi(g, durata) {
+  const presi = appuntamenti(g), out = [];
+  for (let m = AP; m < CH; m += 30) if (libero(m, durata, presi)) out.push(m);
+  return out;
+}
+// Officina: si sceglie quando lasciare l'auto, l'orario lo conferma l'officina.
+function fasce() {
+  const f = [{ nome: "Mattina", inizio: AP }];
+  f.push({ nome: "Pomeriggio", inizio: PAUSA ? PAUSA[1] : AP + 300 });
+  return f;
+}
+function fasciaPiena(g, f) { return (g.getDate() + f.inizio / 30) % 4 === 0; }
+
+// --- 1. Prenotazione ---
+const scelta = { servizio: null, giorno: null, ora: null };
+let prenotazione = null;
+
+$("t-prenota").textContent = OFFICINA ? "1. Richiesta di appuntamento online" : "1. Prenotazione online";
+$("s-prenota").textContent = OFFICINA
+  ? "Il cliente sceglie il lavoro e quando lasciare l'auto, anche la sera. La richiesta arriva in agenda e la conferma l'officina: niente si fissa da solo."
+  : "La cliente sceglie servizio, giorno e ora, anche la sera o nel fine settimana. Vede solo gli orari in cui il trattamento ci sta tutto.";
+$("p-servizio").textContent = OFFICINA ? "Lavoro" : "Servizio";
+$("p-ora").textContent = OFFICINA ? "Quando lascia l'auto" : "Orario";
+$("prenota").textContent = OFFICINA ? "Invia la richiesta" : "Conferma la prenotazione";
+$("nota-servizi").textContent = C.nota_servizi || "";
+if (OFFICINA) {
+  $("dati-auto").hidden = false;
+  $("modello").placeholder = C.veicolo.modello; $("targa").placeholder = C.veicolo.targa;
+}
+
 C.servizi.forEach((s) => {
-  const b = document.createElement("button");
-  b.className = "scelta"; b.type = "button"; b.setAttribute("aria-pressed", "false");
-  b.innerHTML = "<span></span><small></small>";
-  b.firstChild.textContent = s.nome;
-  b.lastChild.textContent = [s.durata ? s.durata + " min" : "", s.prezzo].filter(Boolean).join(" · ");
-  b.onclick = () => { scelta.servizio = s; premi($("servizi"), b); aggiorna(); };
+  const b = crea("button", "scelta"); b.type = "button"; b.setAttribute("aria-pressed", "false");
+  b.append(crea("span", "", s.nome));
+  const info = OFFICINA ? [s.prezzo] : [s.durata ? "circa " + s.durata + " min" : "", s.prezzo];
+  b.append(crea("small", "", info.filter(Boolean).join(" · ")));
+  b.onclick = () => { scelta.servizio = s; scelta.ora = null; premi($("servizi"), b); mostraOre(); aggiorna(); };
   $("servizi").append(b);
 });
 
-const giorni = [];
-for (let d = new Date(), i = 0; giorni.length < 7 && i < 21; i++) {
-  const g = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1 + i);
-  if (!C.giorni_chiusi.includes(g.getDay())) giorni.push(g);
+function bottoniGiorni(contenitore, alClic) {
+  contenitore.innerHTML = "";
+  giorni.forEach((g) => {
+    const b = crea("button", "giorno"); b.type = "button"; b.setAttribute("aria-pressed", "false");
+    b.innerHTML = GIORNI[g.getDay()] + "<b>" + g.getDate() + "</b>";
+    b.dataset.giorno = g.toDateString();
+    b.onclick = () => { premi(contenitore, b); alClic(g); };
+    contenitore.append(b);
+  });
 }
-giorni.forEach((g) => {
-  const b = document.createElement("button");
-  b.className = "giorno"; b.type = "button"; b.setAttribute("aria-pressed", "false");
-  b.innerHTML = GIORNI[g.getDay()] + "<b>" + g.getDate() + "</b>";
-  b.onclick = () => { scelta.giorno = g; scelta.ora = null; premi($("giorni"), b); mostraOre(); aggiorna(); };
-  $("giorni").append(b);
-});
+bottoniGiorni($("giorni"), (g) => { scelta.giorno = g; scelta.ora = null; mostraOre(); aggiorna(); });
+function aggiornaChiusi() {
+  $("giorni").querySelectorAll("button").forEach((b) => {
+    b.disabled = chiusi.has(b.dataset.giorno);
+    if (b.disabled && scelta.giorno && b.dataset.giorno === scelta.giorno.toDateString()) {
+      scelta.giorno = null; b.setAttribute("aria-pressed", "false"); mostraOre(); aggiorna();
+    }
+  });
+}
 
 function mostraOre() {
-  $("ore").innerHTML = "";
-  for (let m = minuti(C.apertura); m < minuti(C.chiusura); m += 30) {
-    const b = document.createElement("button");
-    b.className = "ora"; b.type = "button"; b.textContent = hhmm(m);
-    b.setAttribute("aria-pressed", "false");
-    b.disabled = occupato(scelta.giorno, m);
-    b.onclick = () => { scelta.ora = hhmm(m); premi($("ore"), b); aggiorna(); };
-    $("ore").append(b);
+  const ore = $("ore"); ore.innerHTML = ""; ore.classList.toggle("larghe", OFFICINA);
+  if (!scelta.servizio || !scelta.giorno) { ore.append(crea("span", "vuoto", "Scelga prima servizio e giorno.")); return; }
+  if (OFFICINA) {
+    fasce().forEach((f) => {
+      const b = crea("button", "ora", f.nome + ": dalle " + hhmm(f.inizio) + " alle " + hhmm(f.inizio + 60));
+      b.type = "button"; b.setAttribute("aria-pressed", "false");
+      b.disabled = fasciaPiena(scelta.giorno, f);
+      if (b.disabled) b.textContent += " (pieno)";
+      b.onclick = () => { scelta.ora = f.inizio; premi(ore, b); aggiorna(); };
+      ore.append(b);
+    });
+    return;
   }
+  const liberi = orariLiberi(scelta.giorno, scelta.servizio.durata);
+  if (!liberi.length) { ore.append(crea("span", "vuoto", "Nessun orario libero per questo servizio: provi un altro giorno.")); return; }
+  liberi.forEach((m) => {
+    const b = crea("button", "ora", hhmm(m)); b.type = "button"; b.setAttribute("aria-pressed", "false");
+    b.onclick = () => { scelta.ora = m; premi(ore, b); aggiorna(); };
+    ore.append(b);
+  });
 }
 
-function aggiorna() { $("prenota").disabled = !(scelta.servizio && scelta.giorno && scelta.ora); }
+function aggiorna() { $("prenota").disabled = !(scelta.servizio && scelta.giorno && scelta.ora !== null); }
 
-function quando() {
-  return GIORNI[scelta.giorno.getDay()] + " " + scelta.giorno.getDate() + " " + MESI[scelta.giorno.getMonth()] + " alle " + scelta.ora;
+function auto() {
+  return [$("modello").value.trim() || C.veicolo.modello, $("targa").value.trim().toUpperCase() || C.veicolo.targa];
 }
 
 $("prenota").onclick = () => {
+  prenotazione = { inizio: scelta.ora, durata: OFFICINA ? 30 : scelta.servizio.durata, nome: scelta.servizio.nome,
+                   giorno: scelta.giorno, fonte: "online", nuovo: true, daConfermare: OFFICINA };
+  if (OFFICINA) prenotazione.auto = auto();
   $("conferma").hidden = false;
-  $("conferma").textContent = "Prenotazione registrata: " + scelta.servizio.nome + ", " + quando() +
-    ". Il giorno prima arriva il promemoria su WhatsApp (qui sotto).";
-  messaggi = costruisciMessaggi(); indice = 0; svuotaChat(); mostraMessaggio();
+  $("conferma").textContent = OFFICINA
+    ? "Richiesta inviata: " + prenotazione.nome + ", " + data(scelta.giorno) + ". La trova nell'agenda qui sotto, da confermare."
+    : "Prenotazione registrata: " + prenotazione.nome + ", " + data(scelta.giorno) + " alle " + hhmm(scelta.ora) +
+      ". È già nell'agenda qui sotto; il giorno prima parte il promemoria.";
+  mostraOre();
+  const b = $("giorni-agenda").querySelector('[data-giorno="' + scelta.giorno.toDateString() + '"]');
+  if (b) b.click();
+  scenario(0);
 };
 
-// --- WhatsApp ---
-function costruisciMessaggi() {
-  const servizio = scelta.servizio ? scelta.servizio.nome : C.servizi[0].nome;
-  const ora = scelta.ora || "10:00";
-  if (OFFICINA) return [
-    { da: "attivita", testo: "Buongiorno, le ricordiamo che domani alle " + ora + " l'aspettiamo da " + C.attivita +
-      " per: " + servizio + ".\nRisponda 1 per confermare, 2 per spostare." },
-    { da: "cliente", testo: "1" },
-    { da: "attivita", testo: "Perfetto, a domani!" },
-    { da: "attivita", testo: "La sua auto è pronta: può ritirarla entro le " + C.chiusura + ". Il conto è come da preventivo." },
-    { da: "attivita", testo: "Buongiorno da " + C.attivita + ": tra un mese scade la revisione della sua auto. Vuole che le teniamo un posto? Risponda SÌ e la richiamiamo noi." },
-    { da: "attivita", testo: "Grazie per averci scelto! Se si è trovato bene, ci lascia una recensione su Google? Bastano 30 secondi." },
-  ];
+// --- 2. Agenda del titolare ---
+let giornoAgenda = giorni[0];
+$("s-agenda").textContent = OFFICINA
+  ? "Le richieste online arrivano qui insieme alle auto che segnate quando vi chiamano: una sola agenda."
+  : "Gli appuntamenti presi online entrano da soli; quelli presi al telefono o su WhatsApp si segnano qui in un attimo. Una sola agenda, niente doppioni.";
+$("nota-chiusura").textContent = C.nota_chiusura || "";
+bottoniGiorni($("giorni-agenda"), (g) => { giornoAgenda = g; mostraAgenda(); });
+$("giorni-agenda").firstChild.setAttribute("aria-pressed", "true");
+
+function mostraAgenda() {
+  const ul = $("agenda"); ul.innerHTML = "";
+  const chiave = giornoAgenda.toDateString();
+  $("chiudi").textContent = chiusi.has(chiave) ? "Riapri " + data(giornoAgenda) : "Segna chiuso " + data(giornoAgenda);
+  if (chiusi.has(chiave)) { ul.append(crea("li", "", "Giorno chiuso: dal sito non si può prenotare.")); return; }
+  appuntamenti(giornoAgenda).forEach((a) => {
+    const li = crea("li", a.nuovo ? "nuovo" : "");
+    li.append(crea("b", "", hhmm(a.inizio)));
+    li.append(crea("span", "", a.nome + (a.auto ? " · " + a.auto.join(", ") : "")));
+    if (a.daConfermare) {
+      const b = crea("button", "", "Conferma"); b.type = "button";
+      b.onclick = () => { a.daConfermare = false; mostraAgenda(); scenario(0); $("t-wa").scrollIntoView({ behavior: "smooth" }); };
+      li.append(b);
+    } else {
+      li.append(crea("span", "fonte" + (a.fonte === "online" ? " attesa" : ""), a.fonte));
+    }
+    ul.append(li);
+  });
+}
+$("chiudi").onclick = () => {
+  const k = giornoAgenda.toDateString();
+  if (chiusi.has(k)) chiusi.delete(k); else chiusi.add(k);
+  mostraAgenda(); aggiornaChiusi();
+};
+mostraAgenda();
+
+// --- 3. WhatsApp ---
+function attuale() {
+  if (prenotazione) return prenotazione;
+  const g = giorni[0], s = C.servizi[0];
+  const m = OFFICINA ? AP : (orariLiberi(g, s.durata)[0] ?? AP);
+  return { inizio: m, durata: s.durata, nome: s.nome, giorno: g, auto: OFFICINA ? [C.veicolo.modello, C.veicolo.targa] : null };
+}
+// I due primi orari liberi nei giorni dopo l'appuntamento, per chi chiede di spostarlo.
+function proposte(p) {
+  const out = [];
+  for (const g of giorni) {
+    if (g <= p.giorno || chiusi.has(g.toDateString())) continue;
+    const liberi = orariLiberi(g, p.durata);
+    if (liberi.length) out.push(data(g) + " alle " + hhmm(liberi[Math.floor(liberi.length / 2)]));
+    if (out.length === 2) break;
+  }
+  return out;
+}
+
+function scenari() {
+  const p = attuale(), quando = data(p.giorno) + " alle " + hhmm(p.inizio);
+  const firma = "\n" + C.attivita;
+  if (OFFICINA) {
+    const [modello, targa] = p.auto || [C.veicolo.modello, C.veicolo.targa];
+    const anno = new Date().getFullYear(), mese = new Date().getMonth();
+    const gomme = mese >= 8 || mese <= 1 ? "invernali" : "estive";
+    return [
+      { nome: "Conferma della richiesta", quando: "Parte quando l'officina tocca \"Conferma\" nell'agenda.", msg: [
+        ["a", "Buongiorno, abbiamo visto la sua richiesta e va bene.\nLavoro: " + p.nome + "\nAuto: " + modello + ", " + targa +
+          "\nQuando lasciarla: " + quando + "\nRisponda 1 se le va bene o 2 per un altro giorno." + firma],
+        ["c", "1"], ["a", "Grazie, la aspettiamo " + data(p.giorno) + "." + firma]] },
+      { nome: "Tagliando in scadenza", quando: "Parte da solo un anno dopo l'ultimo tagliando registrato.", msg: [
+        ["a", "Buongiorno, per la sua " + modello + " (" + targa + ") è passato un anno dall'ultimo tagliando, fatto da noi a " +
+          MESI[mese] + " " + (anno - 1) + ".\nVuole fissare il prossimo? Risponda SÌ e la chiamiamo per l'orario." + firma],
+        ["c", "Sì"], ["a", "Bene, la chiamiamo in giornata." + firma]] },
+      { nome: "Revisione in scadenza", quando: "Parte da sola un mese prima della scadenza.", msg: [
+        ["a", "Buongiorno, la revisione della sua " + modello + " (" + targa + ") scade a " + MESI[(mese + 1) % 12] +
+          ".\nSe vuole fissare un giorno, risponda SÌ e la chiamiamo." + firma],
+        ["c", "Sì grazie"], ["a", "Perfetto, la chiamiamo domani mattina." + firma]] },
+      { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
+        ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
+          " (" + targa + ")? Risponda SÌ e le proponiamo un giorno." + firma],
+        ["c", "Sì, meglio di mattina"], ["a", "Va bene: la chiamiamo per fissare una mattina." + firma]] },
+      { nome: "Recensione", quando: "Parte da sola il giorno dopo il ritiro dell'auto.", msg: [
+        ["a", "Buongiorno, grazie per averci scelto. Se è tutto a posto con l'auto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
+    ];
+  }
+  const [a, b] = proposte(p);
   return [
-    { da: "attivita", testo: "Ciao! Ti ricordiamo l'appuntamento di domani alle " + ora + " da " + C.attivita +
-      " per: " + servizio + ".\nRispondi 1 per confermare, 2 per spostarlo." },
-    { da: "cliente", testo: "1" },
-    { da: "attivita", testo: "Perfetto, ti aspettiamo! 😊" },
-    { da: "attivita", testo: "Grazie della visita! Se ti sei trovata/o bene, ci lasci una recensione su Google? Bastano 30 secondi." },
-    { da: "attivita", testo: "Ciao! Sono passate 6 settimane dal tuo ultimo " + servizio.toLowerCase() +
-      ". Vuoi prenotare il prossimo? Ci sono posti liberi giovedì e venerdì." },
+    { nome: "Promemoria", quando: "Parte da solo il giorno prima, alle 18.", msg: [
+      ["a", "Buonasera, le ricordiamo l'appuntamento di domani, " + quando + ".\nServizio: " + p.nome +
+        "\nRisponda 1 per confermare o 2 per spostarlo." + firma],
+      ["c", "1"], ["a", "Grazie, la aspettiamo domani." + firma]] },
+    { nome: "Se risponde 2", quando: "Il sistema propone i primi orari liberi in agenda.", msg: [
+      ["a", "Buonasera, le ricordiamo l'appuntamento di domani, " + quando + ".\nRisponda 1 per confermare o 2 per spostarlo." + firma],
+      ["c", "2"],
+      ["a", "Nessun problema. Questi sono i primi orari liberi:\nA) " + (a || "da concordare") + "\nB) " + (b || "da concordare") +
+        "\nRisponda A o B, oppure ci chiami." + firma],
+      ["c", "B"],
+      ["a", "Fatto: appuntamento spostato a " + (b || "un altro giorno") + ". L'orario di prima torna libero per altre clienti." + firma]] },
+    { nome: "Dopo la visita", quando: "Parte da solo la sera del trattamento.", msg: [
+      ["a", "Buonasera, grazie della visita di oggi. Se il trattamento le è piaciuto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] },
+    { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti.", msg: [
+      ["a", "Buongiorno, sono passate " + C.richiamo_settimane + " settimane dall'ultimo appuntamento (" + p.nome +
+        ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] },
   ];
 }
 
-let messaggi = costruisciMessaggi(), indice = 0;
-$("chat-testa").textContent = OFFICINA ? "Chat con il cliente" : "Chat con la cliente";
-
-function svuotaChat() { $("chat").querySelectorAll(".msg").forEach((m) => m.remove()); $("avanti").disabled = false; }
-
-function mostraMessaggio() {
-  const m = messaggi[indice++];
-  const div = document.createElement("div");
-  div.className = "msg" + (m.da === "cliente" ? " cliente" : "");
-  div.textContent = m.testo;
-  const t = document.createElement("time");
-  t.textContent = hhmm(9 * 60 + indice * 7);
-  div.append(t);
-  $("chat").append(div);
-  if (indice >= messaggi.length) { $("avanti").disabled = true; $("avanti").textContent = "Fine della demo dei messaggi"; }
+let timer = [];
+function scenario(i) {
+  const s = scenari()[i];
+  premi($("scenari"), $("scenari").children[i]);
+  $("quando").textContent = s.quando;
+  timer.forEach(clearTimeout); timer = [];
+  $("chat").innerHTML = "";
+  const veloce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  s.msg.forEach(([chi, testo], k) => {
+    timer.push(setTimeout(() => {
+      const div = crea("div", "msg" + (chi === "c" ? " cliente" : ""), testo);
+      div.append(crea("time", "", hhmm((s.msg[0][1].startsWith("Buonasera") ? 18 * 60 : 9 * 60 + 30) + k * 3)));
+      $("chat").append(div);
+    }, veloce ? 0 : k * 700));
+  });
 }
-$("avanti").onclick = mostraMessaggio;
-mostraMessaggio();
+scenari().forEach((s, i) => {
+  const b = crea("button", "chip", s.nome); b.type = "button"; b.setAttribute("aria-pressed", "false");
+  b.onclick = () => scenario(i);
+  $("scenari").append(b);
+});
+scenario(0);
 
-// --- Scheda Google ---
+// --- 4. Scheda Google ---
 function righe(voci) {
   return voci.map(([ok, testo]) => '<div class="riga"><span class="' + (ok ? "si" : "no") + '">' +
     (ok ? "✓" : "✗") + "</span><span>" + testo + "</span></div>").join("");
 }
-const p = C.scheda_prima;
+const sp = C.scheda_prima;
 $("prima").innerHTML = righe([
-  [p.orari, p.orari ? "Orari indicati" : "Orari non indicati"],
-  [p.foto >= 10, p.foto + " foto"],
-  [p.link, p.link ? "Link al sito" : "Nessun link al sito o ai social"],
-  [false, "Risposte alle recensioni: " + p.risposte],
+  [sp.rivendicata, sp.rivendicata ? "Scheda rivendicata"
+    : "Scheda non rivendicata: nessuno dell'attività può cambiarla o rispondere alle recensioni"],
+  [sp.orari, sp.orari ? "Orari indicati" : "Orari non indicati"],
+  [sp.foto >= 10, sp.foto + " foto"],
+  [sp.link, sp.link ? "Link al sito" : "Nessun link al sito o ai social"],
+  [false, "Risposte alle recensioni: " + sp.risposte],
 ]);
 $("dopo").innerHTML = righe([
+  [true, "Rivendicata e gestita da voi, gratis"],
   [true, "Orari e giorni di chiusura sempre aggiornati"],
   [true, "Foto recenti dei lavori"],
-  [true, "Link a sito, prenotazione e Instagram"],
+  [true, OFFICINA ? "Link a sito e richiesta di appuntamento" : "Link a sito, prenotazione e Instagram"],
   [true, "Risposte alle recensioni"],
 ]);
 
 // --- Cosa cambia ---
-C.automazioni.forEach((a) => { const li = document.createElement("li"); li.textContent = a; $("automazioni").append(li); });
-$("tempo").textContent = "Tempo risparmiato stimato: " + C.tempo_risparmiato + ".";
+C.automazioni.forEach((a) => $("automazioni").append(crea("li", "", a)));
+$("risultato").textContent = C.risultato;
 </script>
 </body>
 </html>
