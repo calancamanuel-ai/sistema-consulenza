@@ -74,6 +74,9 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
      con i dati raccolti (foglio, scheda Google, social, sito, bilancio). Quello che i dati non dicono
      si toglie o si restringe: per esempio "nessuna risposta nelle ultime 10 recensioni", non "le
      recensioni restano senza risposta".
+   - Ogni informazione su servizi di altri (piattaforme come Treatwell o Fresha, prezzi, commissioni,
+     condizioni di WhatsApp o degli SMS) si verifica sulla pagina ufficiale prima di scriverla, e nel
+     documento si annota la fonte con la data. Se non si trova la fonte ufficiale, non si scrive.
    - Come lavora oggi l'attività (chi telefona, come avvisa, come richiama i clienti) non si dà per
      scontato: o è verificato, o diventa un "se oggi..." oppure una domanda da fare al titolare.
    - `cold-email:cold-email-hooks` per l'apertura: un fatto vero, recente e datato legato all'offerta
