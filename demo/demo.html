@@ -114,7 +114,7 @@ const CONFIG = {
       <label><span id="l-campo1"></span> <input id="campo1" autocomplete="off"></label>
       <label><span id="l-campo2"></span> <input id="campo2" autocomplete="off"></label>
     </div>
-    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label> <label class="nota" id="l-richiamo"><input type="checkbox" id="richiamo"> Accetto anche altri messaggi del centro: promozioni, richiamo se non torno da qualche settimana, richiesta di recensione.</label>
+    <label class="nota"><input type="checkbox" id="consenso"> <span id="l-consenso"></span></label> <label class="nota" id="l-richiamo"><input type="checkbox" id="richiamo"> Accetto anche messaggi sulle promozioni e se non torno da qualche settimana.</label>
     <button class="bottone" id="prenota" disabled></button>
     <div class="conferma" id="conferma" hidden></div>
   </section>
@@ -402,9 +402,6 @@ function proposte(p) {
 function scenari() {
   const p = attuale(), quando = data(p.giorno) + " alle " + hhmm(p.inizio);
   const firma = "\n" + C.attivita;
-  // Recensione: si chiede di persona con il cartoncino; il messaggio è solo una riserva se ve ne dimenticate.
-  const recensione = { nome: "Recensione (riserva)", quando: "La recensione la chiedete voi di persona, con il cartoncino al bancone. Se ve ne dimenticate, il giorno dopo l'appuntamento parte questo messaggio, una volta sola per cliente e solo a chi ha accettato i messaggi; con un tocco potete non mandarlo.",
-    msg: [["a", "Buongiorno, grazie della visita di ieri. Se è tutto a posto, una recensione su Google ci aiuta molto: bastano 30 secondi.\n👉 link alla recensione" + firma]] };
   if (OFFICINA) {
     const [modello, targa] = p.auto || [C.veicolo.modello, C.veicolo.targa];
     const anno = new Date().getFullYear(), mese = new Date().getMonth();
@@ -425,7 +422,7 @@ function scenari() {
           (C.revisione_extra ? " " + C.revisione_extra : "") + "\nVuole fissare un giorno? Risponda SÌ e le proponiamo due date." + firma], ...fissa] },
       { nome: "Cambio gomme", quando: "Parte da solo a inizio stagione, a chi ha cambiato le gomme da voi.", msg: [
         ["a", "Buongiorno, è il periodo del cambio gomme " + gomme + ".\nVuole fissare il cambio per la sua " + modello +
-          " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] }, recensione,
+          " (" + targa + ")? Risponda SÌ e le proponiamo due giorni." + firma], ...fissa] },
     ].filter((s) => C.revisioni !== false || !s.nome.startsWith("Revisione"));
   }
   const [a, b] = proposte(p);
@@ -442,7 +439,7 @@ function scenari() {
       ["a", "Buongiorno, " + C.promozione + "\nPer prenotare, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] }] : []),
     { nome: "Cliente che non torna", quando: "Parte da solo dopo " + C.richiamo_settimane + " settimane senza appuntamenti, solo a chi ha accettato questi messaggi.", msg: [
       ["a", "Buongiorno, sono passate " + C.richiamo_settimane + " settimane dall'ultimo appuntamento (" + p.nome +
-        ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] }, recensione,
+        ").\nSe vuole prenotare il prossimo, gli orari liberi sono qui:\n👉 link alla prenotazione" + firma]] },
   ];
 }
 
@@ -488,7 +485,7 @@ $("dopo").innerHTML = righe([
   [!sp.rivendicata, "Rivendicata e gestita da voi, gratis"], [!sp.orari, "Orari e giorni di chiusura aggiornati"],
   [sp.foto < 10, "Foto recenti dei lavori"], [!sp.link, "Link al sito"],
   [true, OFFICINA ? "Link alla richiesta di appuntamento" : "Link alla prenotazione online"], [!sp.rivendicata, "Potete rispondere alle recensioni"],
-  [true, "Cartoncino al bancone con QR e NFC: la recensione la chiedete voi, di persona (con un messaggio di riserva)"],
+  [true, "Tessera al bancone con QR e NFC: la recensione la chiedete voi, di persona"],
 ].filter(([cambia]) => cambia));
 
 // --- Cosa cambia ---

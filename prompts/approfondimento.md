@@ -62,9 +62,9 @@ segnali, motivazione, automazioni, servizi e note sono già lì.
      dice un prezzo si dicono anche i costi fissi (assistenza, messaggi) e che il preventivo riporta il
      totale del primo anno. Le risposte che dipendono da decisioni di Manuel portano una nota per lui.
      I messaggi automatici servono per promemoria e promozioni (con consenso). Le recensioni si chiedono
-     di persona dopo il servizio, con un cartoncino al bancone (QR e NFC, link creato dal Profilo
-     dell'attività su Google): decide il titolare. Il messaggio di recensione è solo una riserva se se ne
-     dimentica, una volta per cliente e escludibile con un tocco. Mai incentivi in cambio di recensioni. In fondo, "Se non rispondono": due contatti, dopo
+     di persona dopo il servizio, con una tessera al bancone (QR e NFC, link creato dal Profilo
+     dell'attività su Google): decide il titolare, nessun messaggio automatico di recensione. Mai
+     incentivi in cambio di recensioni. In fondo, "Se non rispondono": due contatti, dopo
      una settimana e dopo altre due, ognuno con un motivo nuovo (un consiglio gratuito e concreto, poi
      una chiusura senza insistere); mai un "volevo solo risentirvi".
 4. **Demo.** Copia di `demo/demo.html` con il blocco `CONFIG` compilato per l'attività: nome,
